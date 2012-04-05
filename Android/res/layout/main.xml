@@ -1,4 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 
+ *  OpenLogbook - App logging driven distances and times
+ *  Copyright (C) 2012 Michael Lück
+ *
+ *  This program is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU General Public License
+ *  as published by the Free Software Foundation; either version 2
+ *  of the License, or (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
@@ -9,5 +27,66 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/hello" />
+
+    <Button
+        android:id="@+id/btnStartGPS"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/StartGPS" />
+
+    <TextView
+        android:id="@+id/lbLongitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/Longitude"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <EditText
+        android:id="@+id/tbLongitude"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:ems="10" >
+
+        <requestFocus />
+    </EditText>
+
+    <TextView
+        android:id="@+id/lbLatitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/Latitude"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <EditText
+        android:id="@+id/tbLatitude"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:ems="10" />
+
+    <TextView
+        android:id="@+id/lbAltitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/Altitude"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <EditText
+        android:id="@+id/tbAltitude"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:ems="10" />
+
+    <TextView
+        android:id="@+id/lbDistance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/Distance"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <EditText
+        android:id="@+id/tbDistance"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:ems="10" />
 
 </LinearLayout>

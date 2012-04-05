@@ -1,9 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 
+ *  OpenLogbook - App logging driven distances and times
+ *  Copyright (C) 2012 Michael Lück
+ *
+ *  This program is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU General Public License
+ *  as published by the Free Software Foundation; either version 2
+ *  of the License, or (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ -->
 <resources>
 
-    <string name="hello">Hello World, OpenLogbook!</string>
+    <string name="hello">Willkommen bei OpenLogbook</string>
     <string name="app_name">OpenLogbook</string>
     <string name="Commuter">Pendler</string>
     <string name="Fieldstaff">Außendienst</string>
-
+	<string name="CommitModeSelection">Auswählen</string>
+	<string name="StartGPS">GPS starten</string>
+	<string name="StopGPS">GPS stoppen</string>
+	<string name="Longitude">Länge</string>
+	<string name="Latitude">Breite</string>
+	<string name="Altitude">Höhe</string>
+	<string name="Distance">Strecke</string>
 </resources>
