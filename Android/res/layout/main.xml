@@ -21,13 +21,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
-
-    <TextView
-        android:id="@+id/helloTextView"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/hello" />
-
+    
     <Button
         android:id="@+id/btnStartGPS"
         android:layout_width="fill_parent"
@@ -35,46 +29,16 @@
         android:text="@string/StartGPS" />
 
     <TextView
-        android:id="@+id/lbLongitude"
+        android:id="@+id/lbDriver"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/Longitude"
+        android:text="@string/Driver"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <EditText
-        android:id="@+id/tbLongitude"
+    <Spinner
+        android:id="@+id/tbDriver"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:ems="10" >
-
-        <requestFocus />
-    </EditText>
-
-    <TextView
-        android:id="@+id/lbLatitude"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/Latitude"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
-    <EditText
-        android:id="@+id/tbLatitude"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:ems="10" />
-
-    <TextView
-        android:id="@+id/lbAltitude"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/Altitude"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
-    <EditText
-        android:id="@+id/tbAltitude"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:ems="10" />
+        android:layout_height="wrap_content" />
 
     <TextView
         android:id="@+id/lbDistance"
@@ -83,10 +47,29 @@
         android:text="@string/Distance"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <EditText
-        android:id="@+id/tbDistance"
+    <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:ems="10" />
+        android:layout_height="wrap_content" >
+
+        <EditText
+            android:id="@+id/tbDistance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:editable="false"
+            android:ems="10" >
+
+            <requestFocus />
+        </EditText>
+
+        <TextView
+            android:id="@+id/lbDistanceMetric"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/Metric"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    </LinearLayout>
 
 </LinearLayout>

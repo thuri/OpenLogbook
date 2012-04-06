@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- 
+/**
  *  OpenLogbook - App logging driven distances and times
  *  Copyright (C) 2012 Michael Lück
  *
@@ -16,17 +15,17 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- -->
-<resources>
+ */
+package net.lueckonline.android.openlogbook.utils;
 
-    <string name="hello">Willkommen bei OpenLogbook</string>
-    <string name="app_name">OpenLogbook</string>
-    <string name="Commuter">Pendler</string>
-    <string name="Fieldstaff">Außendienst</string>
-	<string name="CommitModeSelection">Auswählen</string>
-	<string name="StartGPS">GPS starten</string>
-	<string name="StopGPS">GPS stoppen</string>
-	<string name="Driver">Fahrer</string>
-	<string name="Distance">Strecke</string>
-	<string name="Metric">km</string>
-</resources>
+/**
+ * @author thuri
+ *
+ */
+public interface IDistanceChangedListener {
+	/**
+	 * Informs subscribers of changes in distance
+	 * @param distance
+	 */
+	public void DistanceChanged(float distance);
+}

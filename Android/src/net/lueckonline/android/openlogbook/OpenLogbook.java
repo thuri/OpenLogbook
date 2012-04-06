@@ -19,28 +19,33 @@
 
 package net.lueckonline.android.openlogbook;
 
+import java.text.DecimalFormat;
+
 import net.lueckonline.android.openlogbook.activities.ModeSelection;
+import net.lueckonline.android.openlogbook.utils.DistanceProvider;
+import net.lueckonline.android.openlogbook.utils.IDistanceChangedListener;
 import net.lueckonline.android.openlogbook.utils.OperationModes;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
-public class OpenLogbook extends Activity implements LocationListener {
+public class OpenLogbook extends Activity implements IDistanceChangedListener {
 
 	private static final int MODE_REQUEST = 1;
 	
-	private boolean locationListener = false;
-
+	private DistanceProvider distanceProvider = null;
+	
+	/*
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onCreate(android.os.Bundle)
+	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -70,80 +75,48 @@ public class OpenLogbook extends Activity implements LocationListener {
 			new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					startGPS(v);
+					onStartGPS_Clicked(v);
 				}
 			}
 		);
+		
+		distanceProvider = new DistanceProvider((LocationManager) getSystemService(Context.LOCATION_SERVICE));
+		
+		distanceProvider.addSumChangedListener(this);
 	}
 
-	private void startGPS(View v) {
-		if(this.locationListener){
-			removeLocationListener();
+	/**
+	 * Event handler waiting for the user to click the button on the main layout
+	 * 
+	 * Toggles the Label of the button from R.string.StartGPS to R.string.StopGPS and back
+	 * whichever label the button had when the user clicked it.
+	 * 
+	 * @param v @see OnClickListener
+	 */
+	private void onStartGPS_Clicked(View v) {
+		final Button btn = (Button) findViewById(R.id.btnStartGPS);
+		
+		if(distanceProvider.isStarted()){
+			distanceProvider.Stop();
+			btn.setText(R.string.StartGPS);
 		}
 		else {
-			addLocationListener();
+			distanceProvider.Start();
+			btn.setText(R.string.StopGPS);
 		}
 	}
 	
-	private void removeLocationListener(){
-		final LocationManager lMgr = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		final Button btn = (Button) findViewById(R.id.btnStartGPS);
+	/* (non-Javadoc)
+	 * @see net.lueckonline.android.openlogbook.utils.IDistanceChangedListener#DistanceChanged(float)
+	 */
+	@Override
+	public void DistanceChanged(float distance) {
+		final float distanceKM = distance / 1000.0f;
+		DecimalFormat df = new DecimalFormat("0.00");
 		
-		lMgr.removeUpdates(this);
-		btn.setText(R.string.StartGPS);
-		this.locationListener = false;
+		((EditText) findViewById(R.id.tbDistance)).setText(df.format(distanceKM));
 	}
 	
-	private void addLocationListener(){
-		final LocationManager lMgr = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		final Button btn = (Button) findViewById(R.id.btnStartGPS);
-		
-		lMgr.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0,	this);
-		btn.setText(R.string.StopGPS);
-		this.locationListener = true;
-	}
-	
-	private Location lastLocation = null;
-	private float distance = 0.0f;
-	
-	@Override
-	public void onLocationChanged(Location l) {
-		final EditText editLong = (EditText) findViewById(R.id.tbLongitude);
-		editLong.setText(String.valueOf(l.getLongitude()));
-
-		final EditText editLat = (EditText) findViewById(R.id.tbLatitude);
-		editLat.setText(String.valueOf(l.getLatitude()));
-
-		final EditText editAlt = (EditText) findViewById(R.id.tbAltitude);
-		editAlt.setText(String.valueOf(l.getAltitude()));
-		
-		if(lastLocation != null) 
-			distance += l.distanceTo(lastLocation);
-		
-		final EditText editDist = (EditText) findViewById(R.id.tbDistance);
-		editDist.setText(String.valueOf(distance));
-		
-		lastLocation = l;
-	}
-
-	@Override
-	public void onProviderDisabled(String arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onProviderEnabled(String arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
-		// TODO Auto-generated method stub
-
-	}
-
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode == Activity.RESULT_OK && requestCode == MODE_REQUEST) {
@@ -156,11 +129,7 @@ public class OpenLogbook extends Activity implements LocationListener {
 	@Override
 	protected void onResume() {
 		super.onResume();
-
-		TextView tv = (TextView) findViewById(R.id.helloTextView);
-
-		tv.setText("Mode="
-				+ getPreferences(MODE_PRIVATE).getInt("Mode",
-						OperationModes.UNKOWN));
 	}
+
+
 }
