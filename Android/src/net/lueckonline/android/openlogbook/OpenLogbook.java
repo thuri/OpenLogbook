@@ -30,11 +30,9 @@ import android.content.SharedPreferences;
 import android.location.LocationManager;
 import android.os.Bundle;
 
-public class OpenLogbook extends BindingActivity /*implements IDistanceChangedListener*/ {
+public class OpenLogbook extends BindingActivity {
 
 	private static final int MODE_REQUEST = 1;
-	
-	//private DistanceProvider distanceProvider = null;
 	
 	/*
 	 * (non-Javadoc)
@@ -63,61 +61,14 @@ public class OpenLogbook extends BindingActivity /*implements IDistanceChangedLi
 			throw new IllegalArgumentException("Unknown OperationMode");
 		}
 		
-		TripCaptureViewModel vm = new TripCaptureViewModel((LocationManager) getSystemService(Context.LOCATION_SERVICE));
+		TripCaptureViewModel vm = new TripCaptureViewModel(this.getApplicationContext(), (LocationManager) getSystemService(Context.LOCATION_SERVICE));
 		
 		vm.drivers.setArray(new String[]{"Driver 1", "Driver 2"});
 		vm.cars.setArray(new String[]{"Car 1", "Car 2"});
 		
-		setAndBindRootView(R.layout.bound, vm);
-
-		//setContentView(R.layout.main);
-
-		/*findViewById(R.id.btnStartGPS).setOnClickListener(
-			new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					onStartGPS_Clicked(v);
-				}
-			}
-		);
-		
-		distanceProvider = new DistanceProvider((LocationManager) getSystemService(Context.LOCATION_SERVICE));
-		
-		distanceProvider.addSumChangedListener(this);*/
+		setAndBindRootView(R.layout.main, vm);
 	}
 
-	/*
-	 * Event handler waiting for the user to click the button on the main layout
-	 * 
-	 * Toggles the Label of the button from R.string.StartGPS to R.string.StopGPS and back
-	 * whichever label the button had when the user clicked it.
-	 * 
-	 * @param v @see OnClickListener
-	 */
-	/*private void onStartGPS_Clicked(View v) {
-		final Button btn = (Button) findViewById(R.id.btnStartGPS);
-		
-		if(distanceProvider.isStarted()){
-			distanceProvider.Stop();
-			btn.setText(R.string.StartGPS);
-		}
-		else {
-			distanceProvider.Start();
-			btn.setText(R.string.StopGPS);
-		}
-	}*/
-	
-	/* (non-Javadoc)
-	 * @see net.lueckonline.android.openlogbook.utils.IDistanceChangedListener#DistanceChanged(float)
-	 */
-	/*@Override
-	public void DistanceChanged(float distance) {
-		final float distanceKM = distance / 1000.0f;
-		DecimalFormat df = new DecimalFormat("0.00");
-		
-		((EditText) findViewById(R.id.tbDistance)).setText(df.format(distanceKM));
-	}*/
-	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode == Activity.RESULT_OK && requestCode == MODE_REQUEST) {

@@ -22,14 +22,17 @@ import gueei.binding.Command;
 import gueei.binding.Observable;
 import gueei.binding.collections.ArrayListObservable;
 import gueei.binding.observables.FloatObservable;
-import gueei.binding.observables.StringObservable;
 
+import java.text.DateFormat;
 import java.util.Date;
 
+import net.lueckonline.android.openlogbook.R;
 import net.lueckonline.android.openlogbook.utils.DistanceProvider;
 import net.lueckonline.android.openlogbook.utils.IDistanceChangedListener;
+import android.content.Context;
 import android.location.LocationManager;
 import android.view.View;
+import android.widget.Button;
 
 /**
  * @author thuri
@@ -37,35 +40,50 @@ import android.view.View;
  */
 public class TripCaptureViewModel implements IDistanceChangedListener{
 	
+	private Context context;
+	
 	public ArrayListObservable<String> drivers = new ArrayListObservable<String>(String.class);
-	public StringObservable driver;
 	
 	public ArrayListObservable<String> cars = new ArrayListObservable<String>(String.class);
-	public StringObservable car;
 	
-	public FloatObservable distance;
+	public FloatObservable distance = new FloatObservable();
 	
-	public Observable<Date> start;
+	public Observable<String> start;
 	
-	public Observable<Date> stop;
+	public Observable<String> stop;
 	
-	public final Command cmdToggleGPS;
+	public Command cmdToggleGPS = new Command(){
+		@Override
+		public void Invoke(View vButton, Object... arg1) {
+			Button btn = (Button)vButton;
+			DateFormat dateFormat = android.text.format.DateFormat.getLongDateFormat(context);
+			DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(context);
+			Date now = new Date();
+			String strNow = dateFormat.format(now) + " " + timeFormat.format(now);
+			if(distanceProvider.isStarted()){
+				distanceProvider.Stop();
+				btn.setText(R.string.StartGPS);
+				stop.set(strNow);
+			}
+			else {
+				distanceProvider.Start();
+				btn.setText(R.string.StopGPS);
+				start.set(strNow);
+			}
+		}
+	};
 	
 	private DistanceProvider distanceProvider;
 	
-	public TripCaptureViewModel(LocationManager locMgr){
+	public TripCaptureViewModel(Context context, LocationManager locMgr){
+		
+		this.context = context;
 		
 		distanceProvider = new DistanceProvider(locMgr);
+		distanceProvider.addSumChangedListener(this);
 		
-		this.cmdToggleGPS = new Command(){
-			@Override
-			public void Invoke(View arg0, Object... arg1) {
-				if(distanceProvider.isStarted())
-					distanceProvider.Stop();
-				else
-					distanceProvider.Start();
-			}
-		};
+		start = new Observable<String>(String.class);
+		stop = new Observable<String>(String.class);
 	}
 
 	/* (non-Javadoc)
