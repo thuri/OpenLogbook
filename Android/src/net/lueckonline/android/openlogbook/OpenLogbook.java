@@ -19,28 +19,22 @@
 
 package net.lueckonline.android.openlogbook;
 
-import java.text.DecimalFormat;
-
+import gueei.binding.app.BindingActivity;
 import net.lueckonline.android.openlogbook.activities.ModeSelection;
-import net.lueckonline.android.openlogbook.utils.DistanceProvider;
-import net.lueckonline.android.openlogbook.utils.IDistanceChangedListener;
 import net.lueckonline.android.openlogbook.utils.OperationModes;
+import net.lueckonline.android.openlogbook.viewmodels.TripCaptureViewModel;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.EditText;
 
-public class OpenLogbook extends Activity implements IDistanceChangedListener {
+public class OpenLogbook extends BindingActivity /*implements IDistanceChangedListener*/ {
 
 	private static final int MODE_REQUEST = 1;
 	
-	private DistanceProvider distanceProvider = null;
+	//private DistanceProvider distanceProvider = null;
 	
 	/*
 	 * (non-Javadoc)
@@ -68,10 +62,17 @@ public class OpenLogbook extends Activity implements IDistanceChangedListener {
 		default:
 			throw new IllegalArgumentException("Unknown OperationMode");
 		}
+		
+		TripCaptureViewModel vm = new TripCaptureViewModel((LocationManager) getSystemService(Context.LOCATION_SERVICE));
+		
+		vm.drivers.setArray(new String[]{"Driver 1", "Driver 2"});
+		vm.cars.setArray(new String[]{"Car 1", "Car 2"});
+		
+		setAndBindRootView(R.layout.bound, vm);
 
-		setContentView(R.layout.main);
+		//setContentView(R.layout.main);
 
-		findViewById(R.id.btnStartGPS).setOnClickListener(
+		/*findViewById(R.id.btnStartGPS).setOnClickListener(
 			new OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -82,10 +83,10 @@ public class OpenLogbook extends Activity implements IDistanceChangedListener {
 		
 		distanceProvider = new DistanceProvider((LocationManager) getSystemService(Context.LOCATION_SERVICE));
 		
-		distanceProvider.addSumChangedListener(this);
+		distanceProvider.addSumChangedListener(this);*/
 	}
 
-	/**
+	/*
 	 * Event handler waiting for the user to click the button on the main layout
 	 * 
 	 * Toggles the Label of the button from R.string.StartGPS to R.string.StopGPS and back
@@ -93,7 +94,7 @@ public class OpenLogbook extends Activity implements IDistanceChangedListener {
 	 * 
 	 * @param v @see OnClickListener
 	 */
-	private void onStartGPS_Clicked(View v) {
+	/*private void onStartGPS_Clicked(View v) {
 		final Button btn = (Button) findViewById(R.id.btnStartGPS);
 		
 		if(distanceProvider.isStarted()){
@@ -104,18 +105,18 @@ public class OpenLogbook extends Activity implements IDistanceChangedListener {
 			distanceProvider.Start();
 			btn.setText(R.string.StopGPS);
 		}
-	}
+	}*/
 	
 	/* (non-Javadoc)
 	 * @see net.lueckonline.android.openlogbook.utils.IDistanceChangedListener#DistanceChanged(float)
 	 */
-	@Override
+	/*@Override
 	public void DistanceChanged(float distance) {
 		final float distanceKM = distance / 1000.0f;
 		DecimalFormat df = new DecimalFormat("0.00");
 		
 		((EditText) findViewById(R.id.tbDistance)).setText(df.format(distanceKM));
-	}
+	}*/
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -125,11 +126,4 @@ public class OpenLogbook extends Activity implements IDistanceChangedListener {
 					.commit();
 		}
 	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-	}
-
-
 }

@@ -29,4 +29,7 @@
 	<string name="Driver">Fahrer</string>
 	<string name="Distance">Strecke</string>
 	<string name="Metric">km</string>
+	<string name="Car">Auto</string>
+	<string name="starttime">Beginn</string>
+	<string name="stoptime">Ende</string>
 </resources>
