@@ -27,9 +27,16 @@ import java.text.DateFormat;
 import java.util.Date;
 
 import net.lueckonline.android.openlogbook.R;
+import net.lueckonline.android.openlogbook.dataaccess.DbHelper;
+import net.lueckonline.android.openlogbook.dataaccess.ILogbookRepository;
+import net.lueckonline.android.openlogbook.dataaccess.RepositoryFactory;
+import net.lueckonline.android.openlogbook.model.Car;
+import net.lueckonline.android.openlogbook.model.Person;
 import net.lueckonline.android.openlogbook.utils.DistanceProvider;
 import net.lueckonline.android.openlogbook.utils.IDistanceChangedListener;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.location.LocationManager;
 import android.view.View;
 import android.widget.Button;
@@ -64,6 +71,7 @@ public class TripCaptureViewModel implements IDistanceChangedListener{
 				distanceProvider.Stop();
 				btn.setText(R.string.StartGPS);
 				stop.set(strNow);
+				save();
 			}
 			else {
 				distanceProvider.Start();
@@ -74,16 +82,24 @@ public class TripCaptureViewModel implements IDistanceChangedListener{
 	};
 	
 	private DistanceProvider distanceProvider;
+
+	private ILogbookRepository repository;
 	
 	public TripCaptureViewModel(Context context, LocationManager locMgr){
-		
-		this.context = context;
 		
 		distanceProvider = new DistanceProvider(locMgr);
 		distanceProvider.addSumChangedListener(this);
 		
 		start = new Observable<String>(String.class);
 		stop = new Observable<String>(String.class);
+		
+		repository = RepositoryFactory.getInstance(context);
+		
+		for(Car car : repository.getCars())
+			this.cars.add(car.getLicensePlate());
+		
+		for(Person driver : repository.getDrivers())
+			this.drivers.add(driver.getName());
 	}
 
 	/* (non-Javadoc)
@@ -93,4 +109,10 @@ public class TripCaptureViewModel implements IDistanceChangedListener{
 	public void DistanceChanged(float distance) {
 		this.distance.set(distance);
 	}
+	
+
+	private void save() {
+		
+	}
+
 }

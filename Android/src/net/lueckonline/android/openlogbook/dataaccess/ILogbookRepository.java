@@ -16,29 +16,22 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-package net.lueckonline.android.openlogbook.model;
+package net.lueckonline.android.openlogbook.dataaccess;
+
+import java.util.List;
+
+import net.lueckonline.android.openlogbook.model.Car;
+import net.lueckonline.android.openlogbook.model.Log;
+import net.lueckonline.android.openlogbook.model.Person;
 
 /**
  * @author thuri
  *
  */
-public class Person {
+public interface ILogbookRepository {
 
-	private int id;
-	private String name;
+	public List<Car> getCars();
+	public List<Person> getDrivers();
 	
-	public int getId() {
-		return id;
-	}
-	public void setId(int id) {
-		this.id = id;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	
+	public void addLog(Log log);
 }

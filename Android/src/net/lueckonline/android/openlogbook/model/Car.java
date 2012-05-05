@@ -23,5 +23,44 @@ package net.lueckonline.android.openlogbook.model;
  *
  */
 public class Car {
+	
+	/**
+	 * The id of the car
+	 */
+	private int id = -1;
+	/**
+	 * The licensePlate of the car
+	 */
+	private String licensePlate = null;
+
+	/**
+	 * @param the Id of the car
+	 */
+	public void setId(int id) {
+		this.id = id;
+	}
+	
+	/**
+	 * 
+	 * @return the id of the car. May be -1 if not set before
+	 */
+	public int getId() {
+		return id;
+	}
+
+	/**
+	 * 
+	 * @return the licensePlate of the car. May be null if not set before
+	 */
+	public String getLicensePlate() {
+		return licensePlate;
+	}
+
+	/**
+	 * @param licensePlate the license plate of the car
+	 */
+	public void setLicensePlate(String licensePlate) {
+		this.licensePlate = licensePlate;
+	}
 
 }

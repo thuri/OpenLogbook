@@ -16,29 +16,31 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-package net.lueckonline.android.openlogbook.model;
+package net.lueckonline.android.openlogbook.dataaccess;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import android.content.Context;
 
 /**
  * @author thuri
  *
  */
-public class Person {
+public class RepositoryFactory {
 
-	private int id;
-	private String name;
+	private static Map<Context, ILogbookRepository> instanceMap = new HashMap<Context, ILogbookRepository>(); 
 	
-	public int getId() {
-		return id;
+	public static ILogbookRepository getInstance(Context context){
+		
+		ILogbookRepository instance;	
+		if(instanceMap.containsKey(context)) 
+			 instance = instanceMap.get(context);
+		else {
+			instance = new LogbookRepository(context);
+			instanceMap.put(context, instance);
+		}
+		
+		return instance;
 	}
-	public void setId(int id) {
-		this.id = id;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	
 }

@@ -63,9 +63,6 @@ public class OpenLogbook extends BindingActivity {
 		
 		TripCaptureViewModel vm = new TripCaptureViewModel(this.getApplicationContext(), (LocationManager) getSystemService(Context.LOCATION_SERVICE));
 		
-		vm.drivers.setArray(new String[]{"Driver 1", "Driver 2"});
-		vm.cars.setArray(new String[]{"Car 1", "Car 2"});
-		
 		setAndBindRootView(R.layout.main, vm);
 	}
 
