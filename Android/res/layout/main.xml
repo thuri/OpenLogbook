@@ -7,14 +7,14 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/lbDriver"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/Driver"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <Spinner
-        android:id="@+id/spinner1"
+        android:id="@+id/spinnerDrivers"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" 
         binding:itemSource="drivers" 
@@ -22,14 +22,14 @@
         binding:onItemSelected="driverSelected"/>
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/lbCar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/Car"
         android:textAppearance="?android:attr/textAppearanceLarge" />
     
     <Spinner
-        android:id="@+id/spinner2"
+        android:id="@+id/spinnerCars"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         binding:itemSource="cars" 
@@ -37,72 +37,60 @@
         binding:onItemSelected="carSelected"/>
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/lbDistance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/Distance"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <EditText
-        android:id="@+id/editText1"
+        android:id="@+id/tbDistance"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="numberDecimal"
         android:focusable="false"
-        binding:text="distance"
-     />
+        binding:text="distance" />
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/lbStarttime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/starttime"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
-
-        <EditText
-            android:id="@+id/editText2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ems="10"
-            android:inputType="date" 
-            binding:text="start"/>
-
-    </LinearLayout>
+    <EditText
+        android:id="@+id/tbStarttime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:ems="10"
+        android:inputType="date" 
+        binding:text="start"/>
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/lbStoptime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/stoptime"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
 
-        <EditText
-            android:id="@+id/editText4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ems="10"   
-            android:focusable="false"
-            android:editable="false"       
-            binding:text="stop"/>
-
-    </LinearLayout>
+     <EditText
+        android:id="@+id/tbStoptime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:ems="10"   
+        android:focusable="false"
+        android:editable="false"       
+        binding:text="stop"/>
 
     <Button
-        android:id="@+id/button1"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/StartGPS" 
-        binding:onClick="cmdToggleGPS"/>
+       android:id="@+id/btnToggleGPS"
+       android:layout_width="fill_parent"
+       android:layout_height="wrap_content"
+       android:text="@string/StartGPS" 
+       binding:onClick="cmdToggleGPS"/>
 
 </LinearLayout>

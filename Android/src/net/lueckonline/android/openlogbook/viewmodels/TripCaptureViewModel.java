@@ -38,6 +38,7 @@ import android.content.Context;
 import android.location.LocationManager;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Spinner;
 
 
 /**
@@ -45,73 +46,155 @@ import android.widget.Button;
  *
  */
 public class TripCaptureViewModel implements IDistanceChangedListener{
+
+	/*
+	 * Fields for View-Binding
+	 */
 	
+	/**
+	 * bindable field referring to the data for the spinner "spinnerDrivers". 
+	 * The Person class overrides the toString() Method, so that the spinner item text can be bound to "."
+	 * 
+	 * @see Person.toString()
+	 * @see R.id.spinnerDrivers
+	 */
 	public final ArrayListObservable<Person> drivers = new ArrayListObservable<Person>(Person.class);
-	public final ArrayListObservable<Car> cars = new ArrayListObservable<Car>(Car.class);
-	public final FloatObservable distance = new FloatObservable(0f);
-	public final Observable<String> start = new Observable<String>(String.class);
-	public final Observable<String> stop = new Observable<String>(String.class);
 	
+	/**
+	 * bindable field referring to the data for the spinner "spinnerCars".
+	 * The Car class overrides the toString() Method, so that the spinner item text can be bound to "."
+	 * 
+	 * @see Car.toString()
+	 * @see R.id.spinnerCars
+	 */
+	public final ArrayListObservable<Car> cars = new ArrayListObservable<Car>(Car.class);
+	
+	/**
+	 * bindable field referring to the data for the readonly edittext "tbDistance"
+	 * 
+	 * @see R.id.tbDistance
+	 */
+	public final FloatObservable distance = new FloatObservable(0.0f);
+	
+	/**
+	 * bindable field referring to the data for the readonly edittext "tbStarttime"
+	 * 
+	 * @see R.id.tbStarttime
+	 */
+	public final Observable<String> start = new Observable<String>(String.class);
+	
+	/**
+	 * bindable field referring to the data for the readonly edittext "tbStoptime"
+	 * 
+	 * @see R.id.tbStoptime
+	 */
+	public final Observable<String> stop = new Observable<String>(String.class);
+
+	/*
+	 * Utility Fields
+	 */
+	
+	/**
+	 * DateFormat object to render a string for the date part of a Date object according to android settings
+	 * depends on the context the application is running in. Must therefor be created within the constructor 
+	 */
+	private final DateFormat dateFormat;
+	
+	/**
+	 * DateFormat object to render a string for the time part of a Date object according to android settings
+	 * depends on the context the application is running in. Must therefor be created within the constructor
+	 */
+	private final DateFormat timeFormat;
+	
+	/*
+	 * Business data
+	 */
+	
+	/**
+	 * the log to track
+	 */
+	private Log log = new Log();
+	
+	/**
+	 * the provider for the movement tracking system
+	 */
+	private DistanceProvider distanceProvider;
+	
+	/**
+	 * the access to the repository  
+	 */
+	private ILogbookRepository repository;
+	
+	/**
+	 * Constructor 
+	 * 
+	 * @param context The Android Context the application is executed in
+	 * @param locMgr  The LocationManager Object used to measure the distance of the trip
+	 */
+	public TripCaptureViewModel(Context context, LocationManager locMgr){
+		
+		//initialize the dateformatting objects
+		dateFormat = android.text.format.DateFormat.getLongDateFormat(context);
+		timeFormat = android.text.format.DateFormat.getTimeFormat(context);
+		
+		//create a distanceProvider Object and register this object as listener for updates
+		distanceProvider = new DistanceProvider(locMgr);
+		distanceProvider.addSumChangedListener(this);
+		
+		//get a reference to the repository by using the Factory
+		repository = RepositoryFactory.getInstance(context);
+		
+		//get all the cars in the repository and put them into the spinner "spinnerCars" via binding
+		this.cars.setArray(repository.getCars().toArray(new Car[0]));
+		
+		//get all the persons in the repository and put them into the spinner "spinnerDrivers" via binding
+		this.drivers.setArray(repository.getDrivers().toArray(new Person[0]));
+	}
+
+	/**
+	 * Command bound to the onClick Event of btnToggleGPS
+	 * 
+	 * If not already started the Event starts the Tracking
+	 * otherwise tracking is stopped and the tracked log/trip is saved to the repository
+	 * 
+	 * @see R.id.btnToggleGPS
+	 */
 	public final Command cmdToggleGPS = new Command(){
 		@Override
 		public void Invoke(View vButton, Object... arg1) {
-			Button btn = (Button)vButton;
-			Date now = new Date();
-			
-			if(distanceProvider.isStarted()){
-				distanceProvider.Stop();
-				btn.setText(R.string.StartGPS);
-				setStop(now);
-				save();
-			}
-			else {
-				distanceProvider.Start();
-				btn.setText(R.string.StopGPS);
-				setStart(now);
-			}
+			btnToggleGPS_Clicked((Button)vButton);
 		}
 	};
 	
+	/**
+	 * Command-Proxy bound to the onItemSelected Event of the spinnerCars Spinner
+	 * 
+	 * sets the currently selected Car on the currently tracked log
+	 * 
+	 *  @see R.id.spinnerCars
+	 */
 	public final Command carSelected = new Command(){
 		@Override
 		public void Invoke(View spinner, Object... arg1) {
 			Integer carIdx = (Integer)arg1[1];
-			log.setCar(cars.get(carIdx));
+			spinnerCars_SelectedIdxChanged((Spinner)spinner, carIdx);
 		}
 	};
 	
+	/**
+	 * Command-Proxy bound to the onItemSelected Event of the spinnerDrivers Spinner
+	 * 
+	 * sets the currently selected Driver on the currently selected log
+	 * 
+	 *  @see R.id.spinnerDrivers
+	 */
 	public final Command driverSelected = new Command(){
 		@Override
 		public void Invoke(View spinner, Object... arg1) {
 			Integer driverIdx = (Integer) arg1[1];
-			log.setDriver(drivers.get(driverIdx));
+			spinnerDrivers_SelectedIdxChanged((Spinner) spinner, driverIdx);
 		}
 	};
-	
-	private DistanceProvider distanceProvider;
-
-	private ILogbookRepository repository;
-	
-	private final DateFormat dateFormat;
-	private final DateFormat timeFormat;
-	
-	private Log log = new Log();
-	
-	public TripCaptureViewModel(Context context, LocationManager locMgr){
-		
-		dateFormat = android.text.format.DateFormat.getLongDateFormat(context);
-		timeFormat = android.text.format.DateFormat.getTimeFormat(context);
-		
-		distanceProvider = new DistanceProvider(locMgr);
-		distanceProvider.addSumChangedListener(this);
-		
-		repository = RepositoryFactory.getInstance(context);
-		
-		this.cars.setArray(repository.getCars().toArray(new Car[0]));
-		
-		this.drivers.setArray(repository.getDrivers().toArray(new Person[0]));
-		
-	}
 
 	/* (non-Javadoc)
 	 * @see net.lueckonline.android.openlogbook.utils.IDistanceChangedListener#DistanceChanged(float)
@@ -122,21 +205,93 @@ public class TripCaptureViewModel implements IDistanceChangedListener{
 	}
 	
 
-	private void save() {
+	/**
+	 * Helper Method to finish setting necessary values on the tracked log 
+	 * and pass it to the repository
+	 */
+	private void saveLog() {
 		this.log.setDistance(this.distance.get());
 		repository.addLog(log);
 	}
 	
-	private void setStart(Date starttime){
-		String strNow = dateFormat.format(starttime) + " " + timeFormat.format(starttime);
-		this.start.set(strNow);
-		this.log.setStart(starttime);
-	}
-	
-	private void setStop(Date stoptime){
+
+	/**
+	 * Stops the GPS Tracking
+	 * Resets the Label of the Button to "Start GPS" or according localization
+	 * sets the stop time on the tracked log and saves the log in the repository
+	 * 
+	 * @see saveLog
+	 * 
+	 * @param stoptime the date to use for the stop time of the tracked log
+	 */
+	private void stopLogging(Date stoptime) {
+		distanceProvider.Stop();
+		
 		String strNow = dateFormat.format(stoptime) + " " + timeFormat.format(stoptime);
 		this.stop.set(strNow);
+		
 		this.log.setStop(stoptime);
+		
+		saveLog();
 	}
 
+	/**
+	 * Starts the GPS Tracking
+	 * Resets the bound input elements (distance, start, stop)
+	 * sets the passed Date as the start time of the tracked log
+	 * 
+	 * @param starttime the date to set as start time of new log to track
+	 */
+	private void startLogging(Date starttime) {
+		distanceProvider.Start();
+
+		this.log = new Log();
+		this.distance.set(0.0f);
+		this.stop.set("");
+		
+		String strNow = dateFormat.format(starttime) + " " + timeFormat.format(starttime);
+		this.start.set(strNow);
+		
+		this.log.setStart(starttime);
+		
+	}
+
+	/**
+	 * real logic for the clicked event of the toggle GPS button
+	 * 
+	 * @param the toggle GPS button
+	 * @see TripCaptureViewModel.cmdToggleGPS
+	 */
+	private void btnToggleGPS_Clicked(Button button) {
+		Date now = new Date();
+		
+		if(distanceProvider.isStarted()){
+			stopLogging(now);
+			button.setText(R.string.StartGPS);
+		}
+		else {
+			startLogging(now);
+			button.setText(R.string.StopGPS);
+		}
+	}
+
+	/**
+	 * real logic for the selectedItem changed event of the spinner for the spinner spinnerCars 
+	 * 
+	 * @param index of the selected car in the array bound to the view
+	 * @see TripCaptureViewModel.cars
+	 */
+	private void spinnerCars_SelectedIdxChanged(Spinner spinner, Integer newIdx) {
+		log.setCar(cars.get(newIdx));
+	}
+	
+	/**
+	 * real logic for the selectedItem changed event of the spinner for the spinner spinnerDrivers
+	 * 
+	 * @param index of the selected car in the array bound to the view
+	 * @see TripCaptureViewModel.drivers
+	 */
+	private void spinnerDrivers_SelectedIdxChanged(Spinner spinner, Integer newIdx) {
+		log.setDriver(drivers.get(newIdx));
+	}
 }
