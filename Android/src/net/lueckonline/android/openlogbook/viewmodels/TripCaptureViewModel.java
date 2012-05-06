@@ -124,9 +124,7 @@ public class TripCaptureViewModel implements IDistanceChangedListener{
 
 	private void save() {
 		this.log.setDistance(this.distance.get());
-		//this.cars.
-		//this.log.setCar(car);
-		//this.log.setDriver(driver);
+		repository.addLog(log);
 	}
 	
 	private void setStart(Date starttime){

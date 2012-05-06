@@ -67,8 +67,8 @@ public class DbHelper extends SQLiteOpenHelper {
 									LOG_COLUMN_ID+" INTEGER PRIMARY KEY AUTOINCREMENT," +
 									LOG_COLUMN_CAR_FK +" integer not null, " +
 									LOG_COLUMN_DRIVER_FK+" integer not null,"+
-									LOG_COLUMN_START +" not null," +
-									LOG_COLUMN_STOP +" not null," +
+									LOG_COLUMN_START +" integer not null," +
+									LOG_COLUMN_STOP +" integer not null," +
 									LOG_COLUMN_DISTANCE +" real not null," +
 								"	foreign key("+LOG_COLUMN_CAR_FK+") references "+CAR_TABLE_NAME+"(id)," +
 								" 	foreign key("+LOG_COLUMN_DRIVER_FK+") references "+PERSON_TABLE_NAME+"(id))";

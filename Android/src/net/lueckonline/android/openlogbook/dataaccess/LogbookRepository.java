@@ -21,6 +21,7 @@ package net.lueckonline.android.openlogbook.dataaccess;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -85,7 +86,16 @@ public class LogbookRepository implements ILogbookRepository {
 	 */
 	@Override
 	public void addLog(Log log) {
-		// TODO Auto-generated method stub
+		SQLiteDatabase db = this.dbHelper.getWritableDatabase();
+		
+		ContentValues values = new ContentValues();
+		values.put(DbHelper.LOG_COLUMN_CAR_FK, log.getCar().getId());
+		values.put(DbHelper.LOG_COLUMN_DRIVER_FK, log.getDriver().getId());
+		values.put(DbHelper.LOG_COLUMN_DISTANCE, log.getDistance());
+		values.put(DbHelper.LOG_COLUMN_START, log.getStart().getTime());
+		values.put(DbHelper.LOG_COLUMN_STOP, log.getStop().getTime());
+		
+		db.insert(DbHelper.LOG_TABLE_NAME, null, values);
 
 	}
 
