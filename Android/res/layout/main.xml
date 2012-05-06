@@ -18,7 +18,8 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" 
         binding:itemSource="drivers" 
-        binding:itemTemplate="@layout/spinner_item"/>
+        binding:itemTemplate="@layout/spinner_item"
+        binding:onItemSelected="driverSelected"/>
 
     <TextView
         android:id="@+id/textView2"
@@ -26,13 +27,14 @@
         android:layout_height="wrap_content"
         android:text="@string/Car"
         android:textAppearance="?android:attr/textAppearanceLarge" />
-
+    
     <Spinner
         android:id="@+id/spinner2"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         binding:itemSource="cars" 
-        binding:itemTemplate="@layout/spinner_item"/>
+        binding:itemTemplate="@layout/spinner_item"
+        binding:onItemSelected="carSelected"/>
 
     <TextView
         android:id="@+id/textView3"

@@ -27,19 +27,18 @@ import java.text.DateFormat;
 import java.util.Date;
 
 import net.lueckonline.android.openlogbook.R;
-import net.lueckonline.android.openlogbook.dataaccess.DbHelper;
 import net.lueckonline.android.openlogbook.dataaccess.ILogbookRepository;
 import net.lueckonline.android.openlogbook.dataaccess.RepositoryFactory;
 import net.lueckonline.android.openlogbook.model.Car;
+import net.lueckonline.android.openlogbook.model.Log;
 import net.lueckonline.android.openlogbook.model.Person;
 import net.lueckonline.android.openlogbook.utils.DistanceProvider;
 import net.lueckonline.android.openlogbook.utils.IDistanceChangedListener;
 import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.location.LocationManager;
 import android.view.View;
 import android.widget.Button;
+
 
 /**
  * @author thuri
@@ -47,37 +46,45 @@ import android.widget.Button;
  */
 public class TripCaptureViewModel implements IDistanceChangedListener{
 	
-	private Context context;
+	public final ArrayListObservable<Person> drivers = new ArrayListObservable<Person>(Person.class);
+	public final ArrayListObservable<Car> cars = new ArrayListObservable<Car>(Car.class);
+	public final FloatObservable distance = new FloatObservable(0f);
+	public final Observable<String> start = new Observable<String>(String.class);
+	public final Observable<String> stop = new Observable<String>(String.class);
 	
-	public ArrayListObservable<String> drivers = new ArrayListObservable<String>(String.class);
-	
-	public ArrayListObservable<String> cars = new ArrayListObservable<String>(String.class);
-	
-	public FloatObservable distance = new FloatObservable();
-	
-	public Observable<String> start;
-	
-	public Observable<String> stop;
-	
-	public Command cmdToggleGPS = new Command(){
+	public final Command cmdToggleGPS = new Command(){
 		@Override
 		public void Invoke(View vButton, Object... arg1) {
 			Button btn = (Button)vButton;
-			DateFormat dateFormat = android.text.format.DateFormat.getLongDateFormat(context);
-			DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(context);
 			Date now = new Date();
-			String strNow = dateFormat.format(now) + " " + timeFormat.format(now);
+			
 			if(distanceProvider.isStarted()){
 				distanceProvider.Stop();
 				btn.setText(R.string.StartGPS);
-				stop.set(strNow);
+				setStop(now);
 				save();
 			}
 			else {
 				distanceProvider.Start();
 				btn.setText(R.string.StopGPS);
-				start.set(strNow);
+				setStart(now);
 			}
+		}
+	};
+	
+	public final Command carSelected = new Command(){
+		@Override
+		public void Invoke(View spinner, Object... arg1) {
+			Integer carIdx = (Integer)arg1[1];
+			log.setCar(cars.get(carIdx));
+		}
+	};
+	
+	public final Command driverSelected = new Command(){
+		@Override
+		public void Invoke(View spinner, Object... arg1) {
+			Integer driverIdx = (Integer) arg1[1];
+			log.setDriver(drivers.get(driverIdx));
 		}
 	};
 	
@@ -85,21 +92,25 @@ public class TripCaptureViewModel implements IDistanceChangedListener{
 
 	private ILogbookRepository repository;
 	
+	private final DateFormat dateFormat;
+	private final DateFormat timeFormat;
+	
+	private Log log = new Log();
+	
 	public TripCaptureViewModel(Context context, LocationManager locMgr){
+		
+		dateFormat = android.text.format.DateFormat.getLongDateFormat(context);
+		timeFormat = android.text.format.DateFormat.getTimeFormat(context);
 		
 		distanceProvider = new DistanceProvider(locMgr);
 		distanceProvider.addSumChangedListener(this);
 		
-		start = new Observable<String>(String.class);
-		stop = new Observable<String>(String.class);
-		
 		repository = RepositoryFactory.getInstance(context);
 		
-		for(Car car : repository.getCars())
-			this.cars.add(car.getLicensePlate());
+		this.cars.setArray(repository.getCars().toArray(new Car[0]));
 		
-		for(Person driver : repository.getDrivers())
-			this.drivers.add(driver.getName());
+		this.drivers.setArray(repository.getDrivers().toArray(new Person[0]));
+		
 	}
 
 	/* (non-Javadoc)
@@ -112,7 +123,22 @@ public class TripCaptureViewModel implements IDistanceChangedListener{
 	
 
 	private void save() {
-		
+		this.log.setDistance(this.distance.get());
+		//this.cars.
+		//this.log.setCar(car);
+		//this.log.setDriver(driver);
+	}
+	
+	private void setStart(Date starttime){
+		String strNow = dateFormat.format(starttime) + " " + timeFormat.format(starttime);
+		this.start.set(strNow);
+		this.log.setStart(starttime);
+	}
+	
+	private void setStop(Date stoptime){
+		String strNow = dateFormat.format(stoptime) + " " + timeFormat.format(stoptime);
+		this.stop.set(strNow);
+		this.log.setStop(stoptime);
 	}
 
 }

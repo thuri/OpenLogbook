@@ -18,9 +18,7 @@
  */
 package net.lueckonline.android.openlogbook.model;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 /**
  * @author thuri
@@ -35,12 +33,7 @@ public class Log {
 	private float distance;
 	private Date start;
 	private Date stop;
-	private List<Person> passengers;
-	
-	public Log(){
-		this.start = new Date();
-		passengers = new ArrayList<Person>();
-	}
+	//private List<Person> passengers;
 	
 	/*
 	 * Getters and setters
@@ -65,8 +58,9 @@ public class Log {
 		return distance;
 	}
 	
-	public void setDistance(float distance) {
-		this.distance = distance;
+	public void setDistance(Float distance) {
+		if(distance != null)
+			this.distance = distance;
 	}
 	
 	public Date getStart() {
@@ -85,11 +79,11 @@ public class Log {
 		this.stop = stop;
 	}
 	
-	public List<Person> getPassengers() {
+	/*public List<Person> getPassengers() {
 		return passengers;
 	}
 	
 	public void setPassengers(List<Person> passengers) {
 		this.passengers = passengers;
-	}
+	}*/
 }

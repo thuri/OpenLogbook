@@ -34,33 +34,33 @@ public class DbHelper extends SQLiteOpenHelper {
 	/*
 	 * CAR TABLE
 	 */
-	protected static final String CAR_TABLE_NAME = "cars";
-	protected static final String CAR_COLUMN_ID = "id";
-	protected static final String CAR_COLUMN_PLATE = "license_plate";
-	private static final String CAR_TABLE_CREATE = "CREATE TABLE "+CAR_TABLE_NAME+ " ("+
+	protected static final String 	CAR_TABLE_NAME 		= "cars";
+	protected static final String 	CAR_COLUMN_ID 		= "id";
+	protected static final String 	CAR_COLUMN_PLATE 	= "license_plate";
+	private static final String 	CAR_TABLE_CREATE 	= "CREATE TABLE "+CAR_TABLE_NAME+ " ("+
 															CAR_COLUMN_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+
 															CAR_COLUMN_PLATE+" varchar(255) UNIQUE)";
 	
 	/*
 	 * PERSON TABLE
 	 */
-	protected static final String PERSON_TABLE_NAME = "persons";
-	protected static final String PERSON_COLUMN_ID = "id";
-	protected static final String PERSON_COLUMN_NAME = "name";
-	private static final String PERSON_TABLE_CREATE = "CREATE TABLE "+PERSON_TABLE_NAME+" ("+
-															PERSON_COLUMN_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, " +
-															PERSON_COLUMN_NAME +" varchar(255))";
+	protected static final String 	PERSON_TABLE_NAME 		= "persons";
+	protected static final String 	PERSON_COLUMN_ID 		= "id";
+	protected static final String 	PERSON_COLUMN_NAME 		= "name";
+	private static final String 	PERSON_TABLE_CREATE		= "CREATE TABLE "+PERSON_TABLE_NAME+" ("+
+																PERSON_COLUMN_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, " +
+																PERSON_COLUMN_NAME +" varchar(255))";
 	
 	/*
 	 * LOG TABLE
 	 */
-	protected static final String LOG_TABLE_NAME = "logs";
-	protected static final String LOG_COLUMN_ID = "id";
-	protected static final String LOG_COLUMN_CAR_FK = "car_fk";
-	protected static final String LOG_COLUMN_DRIVER_FK = "driver_fk";
-	protected static final String LOG_COLUMN_START = "start";
-	protected static final String LOG_COLUMN_STOP = "stop";
-	protected static final String LOG_COLUMN_DISTANCE ="distance";
+	protected static final String	LOG_TABLE_NAME 			= "logs";
+	protected static final String 	LOG_COLUMN_ID			= "id";
+	protected static final String 	LOG_COLUMN_CAR_FK 		= "car_fk";
+	protected static final String 	LOG_COLUMN_DRIVER_FK 	= "driver_fk";
+	protected static final String 	LOG_COLUMN_START 		= "start";
+	protected static final String 	LOG_COLUMN_STOP 		= "stop";
+	protected static final String 	LOG_COLUMN_DISTANCE 	= "distance";
 	
 	private static final String LOG_TABLE_CREATE ="CREATE TABLE "+LOG_TABLE_NAME + 
 								" (	"+
@@ -87,6 +87,7 @@ public class DbHelper extends SQLiteOpenHelper {
 		
 		db.execSQL(CAR_TABLE_CREATE);
 		db.execSQL("INSERT INTO "+DbHelper.CAR_TABLE_NAME +" ("+DbHelper.CAR_COLUMN_PLATE+") VALUES (\"A-PP 1234\")");
+		db.execSQL("INSERT INTO "+DbHelper.CAR_TABLE_NAME +" ("+DbHelper.CAR_COLUMN_PLATE+") VALUES (\"A-PP 4321\")");
 		
 		db.execSQL(LOG_TABLE_CREATE);
 

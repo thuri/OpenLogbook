@@ -18,6 +18,7 @@
  */
 package net.lueckonline.android.openlogbook.model;
 
+
 /**
  * @author thuri
  *
@@ -25,7 +26,7 @@ package net.lueckonline.android.openlogbook.model;
 public class Person {
 
 	private int id;
-	private String name;
+	private String name = null; 
 	
 	public int getId() {
 		return id;
@@ -39,6 +40,8 @@ public class Person {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
-	
+	@Override
+	public String toString() {
+		return this.name;
+	}
 }

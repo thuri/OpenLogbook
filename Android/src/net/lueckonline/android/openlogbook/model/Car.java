@@ -18,6 +18,8 @@
  */
 package net.lueckonline.android.openlogbook.model;
 
+
+
 /**
  * @author thuri
  *
@@ -63,4 +65,8 @@ public class Car {
 		this.licensePlate = licensePlate;
 	}
 
+	@Override
+	public String toString() {
+		return this.licensePlate;
+	}
 }
