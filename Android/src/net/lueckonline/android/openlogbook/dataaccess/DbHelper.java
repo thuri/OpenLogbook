@@ -83,11 +83,8 @@ public class DbHelper extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		db.execSQL(PERSON_TABLE_CREATE);
-		db.execSQL("INSERT INTO "+DbHelper.PERSON_TABLE_NAME +" ("+DbHelper.PERSON_COLUMN_NAME+") VALUES (\"First Driver\")");
 		
 		db.execSQL(CAR_TABLE_CREATE);
-		db.execSQL("INSERT INTO "+DbHelper.CAR_TABLE_NAME +" ("+DbHelper.CAR_COLUMN_PLATE+") VALUES (\"A-PP 1234\")");
-		db.execSQL("INSERT INTO "+DbHelper.CAR_TABLE_NAME +" ("+DbHelper.CAR_COLUMN_PLATE+") VALUES (\"A-PP 4321\")");
 		
 		db.execSQL(LOG_TABLE_CREATE);
 

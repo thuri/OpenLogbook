@@ -18,22 +18,22 @@
  */
 package net.lueckonline.android.openlogbook.dataaccess;
 
-import java.util.List;
-
-import net.lueckonline.android.openlogbook.model.Car;
-import net.lueckonline.android.openlogbook.model.Log;
-import net.lueckonline.android.openlogbook.model.Person;
-
 /**
  * @author thuri
  *
  */
-public interface ILogbookRepository {
+public class DataAccessException extends Exception {
 
-	public List<Car> getCars();
-	public void addCar(Car car) throws DataAccessException;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5686639702613078196L;	
 	
-	public List<Person> getDrivers();
+	public DataAccessException(String message){
+		super(message);
+	}
 	
-	public void addLog(Log log) throws DataAccessException;
+	public DataAccessException(String message, Throwable throwable){
+		super(message, throwable);
+	}
 }

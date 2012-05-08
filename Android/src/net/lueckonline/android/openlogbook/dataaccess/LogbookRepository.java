@@ -21,14 +21,14 @@ package net.lueckonline.android.openlogbook.dataaccess;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-
 import net.lueckonline.android.openlogbook.model.Car;
 import net.lueckonline.android.openlogbook.model.Log;
 import net.lueckonline.android.openlogbook.model.Person;
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
 
 /**
  * @author thuri
@@ -57,8 +57,24 @@ public class LogbookRepository implements ILogbookRepository {
 			car.setLicensePlate(query.getString(query.getColumnIndex(DbHelper.CAR_COLUMN_PLATE)));
 			cars.add(car);
 		}
+		query.close();
 		
 		return cars;
+	}
+	
+	@Override
+	public void addCar(Car car) throws DataAccessException {
+		SQLiteDatabase db = this.dbHelper.getWritableDatabase();
+		
+		ContentValues values = new ContentValues();
+		values.put(DbHelper.CAR_COLUMN_PLATE, car.getLicensePlate());
+		
+		try {
+			db.insertOrThrow(DbHelper.CAR_TABLE_NAME, null, values);
+		} 
+		catch(SQLException sqlex){
+			throw new DataAccessException("Unable to insert car with licensePlate "+car.getLicensePlate(), sqlex);
+		}
 	}
 
 	/* (non-Javadoc)
@@ -77,6 +93,7 @@ public class LogbookRepository implements ILogbookRepository {
 			
 			drivers.add(p);
 		}
+		query.close();
 		
 		return drivers;
 	}
@@ -85,7 +102,7 @@ public class LogbookRepository implements ILogbookRepository {
 	 * @see net.lueckonline.android.openlogbook.dataaccess.ILogbookRepository#addLog(net.lueckonline.android.openlogbook.model.Log)
 	 */
 	@Override
-	public void addLog(Log log) {
+	public void addLog(Log log) throws DataAccessException {
 		SQLiteDatabase db = this.dbHelper.getWritableDatabase();
 		
 		ContentValues values = new ContentValues();
@@ -95,8 +112,11 @@ public class LogbookRepository implements ILogbookRepository {
 		values.put(DbHelper.LOG_COLUMN_START, log.getStart().getTime() / 1000);
 		values.put(DbHelper.LOG_COLUMN_STOP, log.getStop().getTime() / 1000);
 		
-		db.insert(DbHelper.LOG_TABLE_NAME, null, values);
-
+		try {
+			db.insertOrThrow(DbHelper.LOG_TABLE_NAME, null, values);
+		}
+		catch (SQLException sqlex) {
+			throw new DataAccessException("Unable to add Log to database",sqlex);
+		}
 	}
-
 }

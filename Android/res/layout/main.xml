@@ -1,96 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout 
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:binding="http://www.gueei.com/android-binding/"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical">
+    android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/lbDriver"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/Driver"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
-    <Spinner
-        android:id="@+id/spinnerDrivers"
+    <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" 
-        binding:itemSource="drivers" 
-        binding:itemTemplate="@layout/spinner_item"
-        binding:onItemSelected="driverSelected"/>
-
-    <TextView
-        android:id="@+id/lbCar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/Car"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-    
-    <Spinner
-        android:id="@+id/spinnerCars"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        binding:itemSource="cars" 
-        binding:itemTemplate="@layout/spinner_item"
-        binding:onItemSelected="carSelected"/>
-
-    <TextView
-        android:id="@+id/lbDistance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/Distance"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
-    <EditText
-        android:id="@+id/tbDistance"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="numberDecimal"
-        android:focusable="false"
-        binding:text="distance" />
-
-    <TextView
-        android:id="@+id/lbStarttime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/starttime"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
-    <EditText
-        android:id="@+id/tbStarttime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_weight="1"
-        android:ems="10"
-        android:inputType="date" 
-        binding:text="start"/>
+        android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/lbStoptime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/stoptime"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        <TextView
+            android:id="@+id/lbDriver"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/Driver"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
+        <Spinner
+            android:id="@+id/spinnerDrivers"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            binding:itemSource="drivers"
+            binding:itemTemplate="@layout/spinner_item"
+            binding:onItemSelected="driverSelected" />
 
-     <EditText
-        android:id="@+id/tbStoptime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:ems="10"   
-        android:focusable="false"
-        android:editable="false"       
-        binding:text="stop"/>
+        <TextView
+            android:id="@+id/lbCar"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/Car"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <Spinner
+            android:id="@+id/spinnerCars"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            binding:itemSource="cars"
+            binding:itemTemplate="@layout/spinner_item"
+            binding:onItemSelected="carSelected" />
+
+        <TextView
+            android:id="@+id/lbDistance"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/Distance"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <EditText
+            android:id="@+id/tbDistance"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:focusable="false"
+            android:inputType="numberDecimal"
+            binding:text="distance" >
+
+            <requestFocus />
+        </EditText>
+
+        <TextView
+            android:id="@+id/lbStarttime"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/starttime"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <EditText
+            android:id="@+id/tbStarttime"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="date"
+            binding:text="start" />
+
+        <TextView
+            android:id="@+id/lbStoptime"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/stoptime"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <EditText
+            android:id="@+id/tbStoptime"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:editable="false"
+            android:ems="10"
+            android:focusable="false"
+            binding:text="stop" />
+    </LinearLayout>
 
     <Button
-       android:id="@+id/btnToggleGPS"
-       android:layout_width="fill_parent"
-       android:layout_height="wrap_content"
-       android:text="@string/StartGPS" 
-       binding:onClick="cmdToggleGPS"/>
+        android:id="@+id/btnToggleGPS"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:text="@string/StartGPS"
+        binding:onClick="cmdToggleGPS" />
 
 </LinearLayout>

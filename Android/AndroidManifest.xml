@@ -11,7 +11,7 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name" android:name="OpenLogbookApplication">
         <activity
-            android:name=".OpenLogbook"
+            android:name=".activities.OpenLogbook"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,6 +20,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.ModeSelection"></activity>
+        <activity android:name=".activities.CreateCar"></activity>
     </application>
 
 </manifest>

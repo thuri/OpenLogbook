@@ -16,24 +16,15 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-package net.lueckonline.android.openlogbook.dataaccess;
-
-import java.util.List;
+package net.lueckonline.android.openlogbook.viewmodels.createcar;
 
 import net.lueckonline.android.openlogbook.model.Car;
-import net.lueckonline.android.openlogbook.model.Log;
-import net.lueckonline.android.openlogbook.model.Person;
 
 /**
  * @author thuri
  *
  */
-public interface ILogbookRepository {
+public interface CreateCarDelegate {
 
-	public List<Car> getCars();
-	public void addCar(Car car) throws DataAccessException;
-	
-	public List<Person> getDrivers();
-	
-	public void addLog(Log log) throws DataAccessException;
+	public void AddCar(Car newCar);
 }
