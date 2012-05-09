@@ -18,40 +18,29 @@
  */
 package net.lueckonline.android.openlogbook.activities;
 
-import gueei.binding.app.BindingActivity;
 import net.lueckonline.android.openlogbook.R;
 import net.lueckonline.android.openlogbook.dataaccess.DataAccessException;
 import net.lueckonline.android.openlogbook.dataaccess.ILogbookRepository;
 import net.lueckonline.android.openlogbook.dataaccess.RepositoryFactory;
-import net.lueckonline.android.openlogbook.model.Car;
+import net.lueckonline.android.openlogbook.model.Person;
 import net.lueckonline.android.openlogbook.viewmodels.common.FinishDelegate;
-import net.lueckonline.android.openlogbook.viewmodels.createcar.CarCreateViewModel;
-import net.lueckonline.android.openlogbook.viewmodels.createcar.CreateCarDelegate;
+import net.lueckonline.android.openlogbook.viewmodels.createdriver.CreateDriverDelegate;
+import net.lueckonline.android.openlogbook.viewmodels.createdriver.DriverCreateViewModel;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
+import gueei.binding.app.BindingActivity;
 
 /**
- * Activity to create some cars for the application
- * 
- * Implements the DelegateInterface to save a new Car in  the repository
- * 
  * @author thuri
  *
  */
-public class CreateCar extends BindingActivity implements CreateCarDelegate, FinishDelegate{
+public class CreateDriver extends BindingActivity implements FinishDelegate, CreateDriverDelegate{
 
-	/**
-	 * Reference to the repository.
-	 * Used to get currently present cars and to add new cars
-	 */
 	private ILogbookRepository repository = null;
 	
-	/**
-	 * ViewModel for the {@see R.layout.craetecar} layout
-	 */
-	private final CarCreateViewModel vm = new CarCreateViewModel();
+	private final DriverCreateViewModel vm = new DriverCreateViewModel();
 	
 	/**
 	 * A AlertDialog with one button but exchangeable texts
@@ -60,23 +49,19 @@ public class CreateCar extends BindingActivity implements CreateCarDelegate, Fin
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		
 		super.onCreate(savedInstanceState);
 		
-		okAlert = new AlertDialog.Builder(this);
+		repository = RepositoryFactory.getInstance(getApplicationContext());
 		
-		repository = RepositoryFactory.getInstance(this.getApplicationContext());
+		this.okAlert = new AlertDialog.Builder(this);
 		
-		//add this activity as the CreateCarDelegate so the activity is informed if a new Car should be added 
-		vm.addCarCreateDelegate(this);
-		//add this activity as the FinishDelegate so activity is informed if it should close itself
-		vm.addFinishDelegate(this);
+		this.vm.addDriverCreateDelegate(this);
 		
-		//get all the current cars and add it to the observable and bound array
-		vm.cars.setArray(repository.getCars().toArray(new Car[0]));
+		this.vm.addFinishDelegate(this);
 		
-		//bind the viewmodel and display it
-		setAndBindRootView(R.layout.createcar, vm);
+		this.vm.drivers.setArray(repository.getDrivers().toArray(new Person[0]));
+		
+		this.setAndBindRootView(R.layout.createdriver, vm);
 		
 		okAlert.setPositiveButton(android.R.string.ok, new OnClickListener() {
 			@Override
@@ -85,30 +70,28 @@ public class CreateCar extends BindingActivity implements CreateCarDelegate, Fin
 			}
 		});
 	}
-	
+
 	/* (non-Javadoc)
-	 * @see net.lueckonline.android.openlogbook.viewmodels.createcar.CarCreateDelegate#AddCar(Car)
+	 * @see net.lueckonline.android.openlogbook.viewmodels.createdriver.CreateDriverDelegate#AddDriver(net.lueckonline.android.openlogbook.model.Person)
 	 */
 	@Override
-	public void AddCar(Car newCar) {
-		try {
-			if(newCar == null){
-				okAlert.setMessage(getString(R.string.ErrorAddingCar) + System.getProperty("line.separator") + getString(R.string.InternalError));
-				okAlert.create().show();
-				return;
-			}
-			
-			if(newCar.getLicensePlate()  == null || newCar.getLicensePlate().trim().length() == 0){
-				okAlert.setMessage(getString(R.string.ErrorAddingCar) + System.getProperty("line.separator") + getString(R.string.LicensePlateEmpty));
-				okAlert.create().show();
-				return;
-			}
-			
-			//add the car
-			repository.add(newCar);
-			//if no exception was thrown, the car must have been added
-			//so add it to the list so the user can see it.
-			vm.cars.add(newCar);
+	public void AddDriver(Person person) {
+		
+		if(person == null){
+			okAlert.setMessage(getString(R.string.ErrorAddingDriver) + System.getProperty("line.separator") + getString(R.string.InternalError));
+			okAlert.create().show();
+			return;
+		}
+		
+		if(person.getName() == null || person.getName().trim().length() == 0){
+			okAlert.setMessage(getString(R.string.ErrorAddingCar) + System.getProperty("line.separator") + getString(R.string.DriverNameEmpty));
+			okAlert.create().show();
+			return;
+		}
+		
+		try{
+			repository.add(person);
+			vm.drivers.add(person);
 		}
 		catch(DataAccessException dae){
 			//TODO:
@@ -116,16 +99,16 @@ public class CreateCar extends BindingActivity implements CreateCarDelegate, Fin
 			//but in the future a Dialog should inform the user directly
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see net.lueckonline.android.openlogbook.viewmodels.common.FinishDelegate#Finish()
 	 */
 	@Override
 	public void Finish() {
-		if(vm.cars.size() > 0)
-			finish();
+		if(vm.drivers.size() > 0)
+			this.finish();
 		else {
-			okAlert.setMessage(R.string.OneCarMinimum);
+			okAlert.setMessage(R.string.OneDriverMinimum);
 			okAlert.create().show();
 		}
 	}

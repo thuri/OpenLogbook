@@ -21,6 +21,7 @@
         </activity>
         <activity android:name=".activities.ModeSelection"></activity>
         <activity android:name=".activities.CreateCar"></activity>
+        <activity android:name=".activities.CreateDriver"></activity>
     </application>
 
 </manifest>

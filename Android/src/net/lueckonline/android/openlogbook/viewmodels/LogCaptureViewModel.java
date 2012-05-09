@@ -122,11 +122,6 @@ public class LogCaptureViewModel implements IDistanceChangedListener{
 	private DistanceProvider distanceProvider;
 	
 	/**
-	 * the access to the repository  
-	 */
-	//private ILogbookRepository repository;
-	
-	/**
 	 * Constructor 
 	 * 
 	 * @param context The Android Context the application is executed in
@@ -141,15 +136,7 @@ public class LogCaptureViewModel implements IDistanceChangedListener{
 		//create a distanceProvider Object and register this object as listener for updates
 		distanceProvider = new DistanceProvider(locMgr);
 		distanceProvider.addSumChangedListener(this);
-		
-		//get a reference to the repository by using the Factory
-		//repository = RepositoryFactory.getInstance(context);
-		
-		//get all the cars in the repository and put them into the spinner "spinnerCars" via binding
-		//this.cars.setArray(repository.getCars().toArray(new Car[0]));
-		
-		//get all the persons in the repository and put them into the spinner "spinnerDrivers" via binding
-		//this.drivers.setArray(repository.getDrivers().toArray(new Person[0]));
+
 	}
 
 	/**
@@ -248,7 +235,10 @@ public class LogCaptureViewModel implements IDistanceChangedListener{
 	private void startLogging(Date starttime) {
 		distanceProvider.Start();
 
-		this.log = new Log();
+		Log newLog = new Log();
+		newLog.setCar(this.log.getCar());
+		newLog.setDriver(this.log.getDriver());
+		this.log = newLog;
 		this.distance.set(0.0f);
 		this.stop.set("");
 		

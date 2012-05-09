@@ -42,4 +42,9 @@
 	<string name="InternalError">Es ist ein interner Fehler aufgetreten.</string>
 	<string name="LicensePlateEmpty">Das Nummernschild darf nicht leer sein.</string>
 	<string name="OneCarMinimum">Es muss mindestens ein Fahrzeug vorhanden sein.</string>
+	<string name="availableDrivers">Vorhandene Fahrer</string>
+	<string name="name">Name</string>
+	<string name="ErrorAddingDriver">Der Fahrer konnte nicht angelegt werden.</string>
+	<string name="DriverNameEmpty">Der Name des Fahrers darf nicht leer sein.</string>
+	<string name="OneDriverMinimum">Es muss mindestens ein Fahrer vorhanden sein.</string>
 </resources>

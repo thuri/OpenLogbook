@@ -58,11 +58,13 @@ public class OpenLogbook extends BindingActivity implements CreateLogDelegate {
 			case OperationModes.UNKOWN:
 				Intent intent = new Intent(this, ModeSelection.class);
 				Intent carIntent = new Intent(this, CreateCar.class);
+				Intent driverIntent = new Intent(this, CreateDriver.class);
 				// although startActivityForResult is asynchronous the View of this
 				// onCreate will not be displayed
 				// until the Activity Returned a result (see Android Dev Doku)
-				startActivityForResult(intent, MODE_REQUEST);
 				startActivity(carIntent);
+				startActivity(driverIntent);
+				startActivityForResult(intent, MODE_REQUEST);
 				break;
 			case OperationModes.COMMUTER:
 			case OperationModes.FIELDSTAFF:
@@ -109,7 +111,7 @@ public class OpenLogbook extends BindingActivity implements CreateLogDelegate {
 	@Override
 	public void AddLog(Log log) {
 		try {
-			repository.addLog(log);
+			repository.add(log);
 		}
 		catch(DataAccessException dae){
 			//TODO: inform user

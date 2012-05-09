@@ -63,7 +63,7 @@ public class LogbookRepository implements ILogbookRepository {
 	}
 	
 	@Override
-	public void addCar(Car car) throws DataAccessException {
+	public void add(Car car) throws DataAccessException {
 		SQLiteDatabase db = this.dbHelper.getWritableDatabase();
 		
 		ContentValues values = new ContentValues();
@@ -97,12 +97,28 @@ public class LogbookRepository implements ILogbookRepository {
 		
 		return drivers;
 	}
+	
+	@Override
+	public void add(Person driver) throws DataAccessException {
+		SQLiteDatabase db = this.dbHelper.getWritableDatabase();
+		
+		ContentValues values = new ContentValues();
+		values.put(DbHelper.PERSON_COLUMN_NAME, driver.getName());
+		
+		try {
+			db.insertOrThrow(DbHelper.PERSON_TABLE_NAME, null, values);
+		} 
+		catch(SQLException sqlex){
+			throw new DataAccessException("Unable to add Driver to database", sqlex);
+		}
+		
+	}
 
 	/* (non-Javadoc)
 	 * @see net.lueckonline.android.openlogbook.dataaccess.ILogbookRepository#addLog(net.lueckonline.android.openlogbook.model.Log)
 	 */
 	@Override
-	public void addLog(Log log) throws DataAccessException {
+	public void add(Log log) throws DataAccessException {
 		SQLiteDatabase db = this.dbHelper.getWritableDatabase();
 		
 		ContentValues values = new ContentValues();
