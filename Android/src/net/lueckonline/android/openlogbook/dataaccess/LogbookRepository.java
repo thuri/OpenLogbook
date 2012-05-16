@@ -24,6 +24,7 @@ import java.util.List;
 import net.lueckonline.android.openlogbook.model.Car;
 import net.lueckonline.android.openlogbook.model.Log;
 import net.lueckonline.android.openlogbook.model.Person;
+import net.lueckonline.android.openlogbook.utils.OperationModes;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -98,6 +99,22 @@ public class LogbookRepository implements ILogbookRepository {
 		return drivers;
 	}
 	
+
+	@Override
+	public int getMode() {
+		SQLiteDatabase db = this.dbHelper.getReadableDatabase();
+		Cursor query = db.query(DbHelper.SETTINGS_TABLE_NAME, null, DbHelper.SETTINGS_COLUMN_KEY+" = ?", new String[]{"Mode"},null, null, null);
+		
+		int mode = OperationModes.UNKOWN;
+		
+		if(query.moveToFirst())
+			mode = query.getInt(query.getColumnIndex(DbHelper.SETTINGS_COLUMN_VALUE));
+			
+		query.close();
+		
+		return mode;
+	}
+	
 	@Override
 	public void add(Person driver) throws DataAccessException {
 		SQLiteDatabase db = this.dbHelper.getWritableDatabase();
@@ -133,6 +150,22 @@ public class LogbookRepository implements ILogbookRepository {
 		}
 		catch (SQLException sqlex) {
 			throw new DataAccessException("Unable to add Log to database",sqlex);
+		}
+	}
+
+	@Override
+	public void setMode(int mode) throws DataAccessException {
+		SQLiteDatabase db = this.dbHelper.getReadableDatabase();
+		
+		ContentValues values = new ContentValues();
+		values.put(DbHelper.SETTINGS_COLUMN_KEY, "Mode");
+		values.put(DbHelper.SETTINGS_COLUMN_VALUE, mode);
+		
+		try{
+			db.insertOrThrow(DbHelper.SETTINGS_TABLE_NAME, null, values);
+		}
+		catch(SQLException sqlex){
+			throw new DataAccessException("Unable to set mode in database", sqlex);
 		}
 	}
 }

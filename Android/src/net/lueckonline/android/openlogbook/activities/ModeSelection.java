@@ -20,9 +20,11 @@
 package net.lueckonline.android.openlogbook.activities;
 
 import net.lueckonline.android.openlogbook.R;
+import net.lueckonline.android.openlogbook.dataaccess.DataAccessException;
+import net.lueckonline.android.openlogbook.dataaccess.ILogbookRepository;
+import net.lueckonline.android.openlogbook.dataaccess.RepositoryFactory;
 import net.lueckonline.android.openlogbook.utils.OperationModes;
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -31,9 +33,13 @@ import android.widget.RadioGroup;
 
 public class ModeSelection extends Activity implements OnClickListener{
 
+	private ILogbookRepository repository;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		this.repository = RepositoryFactory.getInstance(getApplicationContext());
 		
 		setContentView(R.layout.modeselection);
 		
@@ -43,7 +49,6 @@ public class ModeSelection extends Activity implements OnClickListener{
 
 	@Override
 	public void onClick(View v) {
-		Intent data = new Intent();
 		
 		RadioGroup modeGroup = (RadioGroup) findViewById(R.id.radioGroupMode);
 		
@@ -60,8 +65,17 @@ public class ModeSelection extends Activity implements OnClickListener{
 				throw new UnsupportedOperationException("Unsupported Mode selected");
 		}
 		
-		data.putExtra("Mode", mode);
-		setResult(Activity.RESULT_OK, data);
+		/*getPreferences(MODE_PRIVATE)
+			.edit()
+			.putInt(LogbookConstants.MODE_PREFKEY, mode)
+			.commit();*/
+		
+		try {
+			repository.setMode(mode);
+		} catch (DataAccessException e) {
+			//TODO: inform user
+		}
+		
 		finish();
 	}
 

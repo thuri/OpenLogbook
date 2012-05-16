@@ -16,28 +16,13 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-package net.lueckonline.android.openlogbook.dataaccess;
-
-import java.util.List;
-
-import net.lueckonline.android.openlogbook.model.Car;
-import net.lueckonline.android.openlogbook.model.Log;
-import net.lueckonline.android.openlogbook.model.Person;
+package net.lueckonline.android.openlogbook.model;
 
 /**
  * @author thuri
  *
  */
-public interface ILogbookRepository {
+public interface LogbookConstants {
 
-	public List<Car> getCars();
-	public void add(Car car) throws DataAccessException;
-	
-	public List<Person> getDrivers();
-	public void add(Person driver) throws DataAccessException;
-	
-	public void add(Log log) throws DataAccessException;
-	
-	public int getMode();
-	public void setMode(int mode) throws DataAccessException;
+	public static final String MODE_PREFKEY = "Mode";
 }

@@ -22,6 +22,8 @@ package net.lueckonline.android.openlogbook.activities;
 import net.lueckonline.android.openlogbook.R;
 import net.lueckonline.android.openlogbook.activities.base.BaseActivity;
 import net.lueckonline.android.openlogbook.dataaccess.DataAccessException;
+import net.lueckonline.android.openlogbook.dataaccess.ILogbookRepository;
+import net.lueckonline.android.openlogbook.dataaccess.RepositoryFactory;
 import net.lueckonline.android.openlogbook.model.Car;
 import net.lueckonline.android.openlogbook.model.Log;
 import net.lueckonline.android.openlogbook.model.Person;
@@ -30,17 +32,16 @@ import net.lueckonline.android.openlogbook.viewmodels.LogCaptureViewModel;
 import net.lueckonline.android.openlogbook.viewmodels.createlog.CreateLogDelegate;
 import net.lueckonline.android.openlogbook.viewmodels.mainmenu.MainMenuViewModel;
 import net.lueckonline.android.openlogbook.viewmodels.mainmenu.StartIntentDelegate;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.location.LocationManager;
 import android.os.Bundle;
 
 public class OpenLogbook extends BaseActivity implements CreateLogDelegate, StartIntentDelegate {
 
-	private static final int MODE_REQUEST = 1;
 	private LogCaptureViewModel vm;
+	
+	private ILogbookRepository repository;
 	
 	/*
 	 * (non-Javadoc)
@@ -49,9 +50,13 @@ public class OpenLogbook extends BaseActivity implements CreateLogDelegate, Star
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		repository = RepositoryFactory.getInstance(getApplicationContext());
 
-		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-		int mode = preferences.getInt("Mode", OperationModes.UNKOWN);
+		//SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+		//int mode = preferences.getInt(LogbookConstants.MODE_PREFKEY, OperationModes.UNKOWN);
+		
+		int mode = repository.getMode();
 
 		switch (mode) {
 			case OperationModes.UNKOWN:
@@ -63,7 +68,8 @@ public class OpenLogbook extends BaseActivity implements CreateLogDelegate, Star
 				// until the Activity Returned a result (see Android Dev Doku)
 				startActivity(carIntent);
 				startActivity(driverIntent);
-				startActivityForResult(intent, MODE_REQUEST);
+				startActivity(intent);
+				//startActivityForResult(intent, MODE_REQUEST);
 				break;
 			case OperationModes.COMMUTER:
 			case OperationModes.FIELDSTAFF:
@@ -95,14 +101,14 @@ public class OpenLogbook extends BaseActivity implements CreateLogDelegate, Star
 		vm.drivers.setArray(getRepository().getDrivers().toArray(new Person[0]));
 	}
 
-	@Override
+	/*@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode == Activity.RESULT_OK && requestCode == MODE_REQUEST) {
 			SharedPreferences preferences = getPreferences(MODE_PRIVATE);
 			preferences.edit().putInt("Mode", data.getExtras().getInt("Mode"))
 					.commit();
 		}
-	}
+	}*/
 
 	/* (non-Javadoc)
 	 * @see net.lueckonline.android.openlogbook.viewmodels.createlog.CreateLogDelegate#AddLog(net.lueckonline.android.openlogbook.model.Log)

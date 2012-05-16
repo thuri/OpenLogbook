@@ -72,6 +72,18 @@ public class DbHelper extends SQLiteOpenHelper {
 									LOG_COLUMN_DISTANCE +" real not null," +
 								"	foreign key("+LOG_COLUMN_CAR_FK+") references "+CAR_TABLE_NAME+"(id)," +
 								" 	foreign key("+LOG_COLUMN_DRIVER_FK+") references "+PERSON_TABLE_NAME+"(id))";
+	
+	/*
+	 * MODE TABLE
+	 */
+	protected static final String 	SETTINGS_TABLE_NAME = "settings";
+	protected static final String 	SETTINGS_COLUMN_KEY = "key";
+	protected static final String 	SETTINGS_COLUMN_VALUE = "value";
+	
+	private static final String SETTINGS_TABLE_CREATE = "CREATE TABLE "+SETTINGS_TABLE_NAME + "(" + 
+														  SETTINGS_COLUMN_KEY 	+ " varchar(255) not null," +
+														  SETTINGS_COLUMN_VALUE + " varchar(1024) not null " +
+														  ")";
 
 	public DbHelper(Context context){
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -87,6 +99,8 @@ public class DbHelper extends SQLiteOpenHelper {
 		db.execSQL(CAR_TABLE_CREATE);
 		
 		db.execSQL(LOG_TABLE_CREATE);
+		
+		db.execSQL(SETTINGS_TABLE_CREATE);
 
 	}
 
