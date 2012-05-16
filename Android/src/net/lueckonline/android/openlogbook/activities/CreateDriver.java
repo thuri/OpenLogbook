@@ -19,41 +19,31 @@
 package net.lueckonline.android.openlogbook.activities;
 
 import net.lueckonline.android.openlogbook.R;
+import net.lueckonline.android.openlogbook.activities.base.BaseActivity;
 import net.lueckonline.android.openlogbook.dataaccess.DataAccessException;
 import net.lueckonline.android.openlogbook.dataaccess.ILogbookRepository;
 import net.lueckonline.android.openlogbook.dataaccess.RepositoryFactory;
 import net.lueckonline.android.openlogbook.model.Person;
-import net.lueckonline.android.openlogbook.viewmodels.common.FinishDelegate;
 import net.lueckonline.android.openlogbook.viewmodels.createdriver.CreateDriverDelegate;
 import net.lueckonline.android.openlogbook.viewmodels.createdriver.DriverCreateViewModel;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
-import gueei.binding.app.BindingActivity;
 
 /**
  * @author thuri
  *
  */
-public class CreateDriver extends BindingActivity implements FinishDelegate, CreateDriverDelegate{
+public class CreateDriver extends BaseActivity implements CreateDriverDelegate{
 
 	private ILogbookRepository repository = null;
 	
 	private final DriverCreateViewModel vm = new DriverCreateViewModel();
 	
-	/**
-	 * A AlertDialog with one button but exchangeable texts
-	 */
-	private AlertDialog.Builder okAlert;
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		
 		super.onCreate(savedInstanceState);
 		
 		repository = RepositoryFactory.getInstance(getApplicationContext());
-		
-		this.okAlert = new AlertDialog.Builder(this);
 		
 		this.vm.addDriverCreateDelegate(this);
 		
@@ -63,12 +53,6 @@ public class CreateDriver extends BindingActivity implements FinishDelegate, Cre
 		
 		this.setAndBindRootView(R.layout.createdriver, vm);
 		
-		okAlert.setPositiveButton(android.R.string.ok, new OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.cancel();
-			}
-		});
 	}
 
 	/* (non-Javadoc)
@@ -78,14 +62,14 @@ public class CreateDriver extends BindingActivity implements FinishDelegate, Cre
 	public void AddDriver(Person person) {
 		
 		if(person == null){
-			okAlert.setMessage(getString(R.string.ErrorAddingDriver) + System.getProperty("line.separator") + getString(R.string.InternalError));
-			okAlert.create().show();
+			getOkAlert().setMessage(getString(R.string.ErrorAddingDriver) + System.getProperty("line.separator") + getString(R.string.InternalError));
+			getOkAlert().create().show();
 			return;
 		}
 		
 		if(person.getName() == null || person.getName().trim().length() == 0){
-			okAlert.setMessage(getString(R.string.ErrorAddingCar) + System.getProperty("line.separator") + getString(R.string.DriverNameEmpty));
-			okAlert.create().show();
+			getOkAlert().setMessage(getString(R.string.ErrorAddingCar) + System.getProperty("line.separator") + getString(R.string.DriverNameEmpty));
+			getOkAlert().create().show();
 			return;
 		}
 		
@@ -95,7 +79,7 @@ public class CreateDriver extends BindingActivity implements FinishDelegate, Cre
 		}
 		catch(DataAccessException dae){
 			//TODO:
-			//the user should see that the car couldn't be added because it won't appear in the list
+			//the user should see that the driver couldn't be added because it won't appear in the list
 			//but in the future a Dialog should inform the user directly
 		}
 	}
@@ -105,11 +89,6 @@ public class CreateDriver extends BindingActivity implements FinishDelegate, Cre
 	 */
 	@Override
 	public void Finish() {
-		if(vm.drivers.size() > 0)
-			this.finish();
-		else {
-			okAlert.setMessage(R.string.OneDriverMinimum);
-			okAlert.create().show();
-		}
+		super.Finish(vm.drivers.size() > 0, getString(R.string.OneDriverMinimum));
 	}
 }

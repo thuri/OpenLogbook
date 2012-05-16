@@ -18,18 +18,12 @@
  */
 package net.lueckonline.android.openlogbook.activities;
 
-import gueei.binding.app.BindingActivity;
 import net.lueckonline.android.openlogbook.R;
+import net.lueckonline.android.openlogbook.activities.base.BaseActivity;
 import net.lueckonline.android.openlogbook.dataaccess.DataAccessException;
-import net.lueckonline.android.openlogbook.dataaccess.ILogbookRepository;
-import net.lueckonline.android.openlogbook.dataaccess.RepositoryFactory;
 import net.lueckonline.android.openlogbook.model.Car;
-import net.lueckonline.android.openlogbook.viewmodels.common.FinishDelegate;
 import net.lueckonline.android.openlogbook.viewmodels.createcar.CarCreateViewModel;
 import net.lueckonline.android.openlogbook.viewmodels.createcar.CreateCarDelegate;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 
 /**
@@ -40,32 +34,18 @@ import android.os.Bundle;
  * @author thuri
  *
  */
-public class CreateCar extends BindingActivity implements CreateCarDelegate, FinishDelegate{
+public class CreateCar extends BaseActivity implements CreateCarDelegate {
 
-	/**
-	 * Reference to the repository.
-	 * Used to get currently present cars and to add new cars
-	 */
-	private ILogbookRepository repository = null;
 	
 	/**
 	 * ViewModel for the {@see R.layout.craetecar} layout
 	 */
 	private final CarCreateViewModel vm = new CarCreateViewModel();
 	
-	/**
-	 * A AlertDialog with one button but exchangeable texts
-	 */
-	private AlertDialog.Builder okAlert;
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		
 		super.onCreate(savedInstanceState);
-		
-		okAlert = new AlertDialog.Builder(this);
-		
-		repository = RepositoryFactory.getInstance(this.getApplicationContext());
 		
 		//add this activity as the CreateCarDelegate so the activity is informed if a new Car should be added 
 		vm.addCarCreateDelegate(this);
@@ -73,17 +53,11 @@ public class CreateCar extends BindingActivity implements CreateCarDelegate, Fin
 		vm.addFinishDelegate(this);
 		
 		//get all the current cars and add it to the observable and bound array
-		vm.cars.setArray(repository.getCars().toArray(new Car[0]));
+		vm.cars.setArray(getRepository().getCars().toArray(new Car[0]));
 		
 		//bind the viewmodel and display it
 		setAndBindRootView(R.layout.createcar, vm);
 		
-		okAlert.setPositiveButton(android.R.string.ok, new OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.cancel();
-			}
-		});
 	}
 	
 	/* (non-Javadoc)
@@ -93,19 +67,19 @@ public class CreateCar extends BindingActivity implements CreateCarDelegate, Fin
 	public void AddCar(Car newCar) {
 		try {
 			if(newCar == null){
-				okAlert.setMessage(getString(R.string.ErrorAddingCar) + System.getProperty("line.separator") + getString(R.string.InternalError));
-				okAlert.create().show();
+				getOkAlert().setMessage(getString(R.string.ErrorAddingCar) + System.getProperty("line.separator") + getString(R.string.InternalError));
+				getOkAlert().create().show();
 				return;
 			}
 			
 			if(newCar.getLicensePlate()  == null || newCar.getLicensePlate().trim().length() == 0){
-				okAlert.setMessage(getString(R.string.ErrorAddingCar) + System.getProperty("line.separator") + getString(R.string.LicensePlateEmpty));
-				okAlert.create().show();
+				getOkAlert().setMessage(getString(R.string.ErrorAddingCar) + System.getProperty("line.separator") + getString(R.string.LicensePlateEmpty));
+				getOkAlert().create().show();
 				return;
 			}
 			
 			//add the car
-			repository.add(newCar);
+			getRepository().add(newCar);
 			//if no exception was thrown, the car must have been added
 			//so add it to the list so the user can see it.
 			vm.cars.add(newCar);
@@ -122,11 +96,6 @@ public class CreateCar extends BindingActivity implements CreateCarDelegate, Fin
 	 */
 	@Override
 	public void Finish() {
-		if(vm.cars.size() > 0)
-			finish();
-		else {
-			okAlert.setMessage(R.string.OneCarMinimum);
-			okAlert.create().show();
-		}
+		Finish(vm.cars.size() > 0, getString(R.string.OneCarMinimum));
 	}
 }

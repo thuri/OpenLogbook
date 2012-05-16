@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu 
+    xmlns:android="http://schemas.android.com/apk/res/android" 
+    xmlns:binding="http://www.gueei.com/android-binding/" >
+    <item 
+        android:id="@+id/drivers_menu" 
+        android:title="@string/Drivers" 
+        android:icon="@drawable/ic_launcher"
+        binding:onClick="openDriverCreate"
+    />
+    <item 
+        android:id="@+id/cars_menu" 
+        android:title="@string/Cars"
+        android:icon="@drawable/ic_launcher"
+        binding:onClick="openCarCreate"
+    />
+    <item 
+        android:id="@+id/mode_menu" 
+        android:title="@string/Modus"
+        android:icon="@drawable/ic_launcher"
+        binding:onClick="openModeSelection"
+    />
+</menu>

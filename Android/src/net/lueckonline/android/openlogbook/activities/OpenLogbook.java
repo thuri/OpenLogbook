@@ -19,17 +19,17 @@
 
 package net.lueckonline.android.openlogbook.activities;
 
-import gueei.binding.app.BindingActivity;
 import net.lueckonline.android.openlogbook.R;
+import net.lueckonline.android.openlogbook.activities.base.BaseActivity;
 import net.lueckonline.android.openlogbook.dataaccess.DataAccessException;
-import net.lueckonline.android.openlogbook.dataaccess.ILogbookRepository;
-import net.lueckonline.android.openlogbook.dataaccess.RepositoryFactory;
 import net.lueckonline.android.openlogbook.model.Car;
 import net.lueckonline.android.openlogbook.model.Log;
 import net.lueckonline.android.openlogbook.model.Person;
 import net.lueckonline.android.openlogbook.utils.OperationModes;
 import net.lueckonline.android.openlogbook.viewmodels.LogCaptureViewModel;
 import net.lueckonline.android.openlogbook.viewmodels.createlog.CreateLogDelegate;
+import net.lueckonline.android.openlogbook.viewmodels.mainmenu.MainMenuViewModel;
+import net.lueckonline.android.openlogbook.viewmodels.mainmenu.StartIntentDelegate;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -37,11 +37,10 @@ import android.content.SharedPreferences;
 import android.location.LocationManager;
 import android.os.Bundle;
 
-public class OpenLogbook extends BindingActivity implements CreateLogDelegate {
+public class OpenLogbook extends BaseActivity implements CreateLogDelegate, StartIntentDelegate {
 
 	private static final int MODE_REQUEST = 1;
 	private LogCaptureViewModel vm;
-	private ILogbookRepository repository;
 	
 	/*
 	 * (non-Javadoc)
@@ -74,14 +73,14 @@ public class OpenLogbook extends BindingActivity implements CreateLogDelegate {
 				throw new IllegalArgumentException("Unknown OperationMode");
 		}
 		
-		//get a reference to the repository by using the Factory
-		repository = RepositoryFactory.getInstance(this.getApplicationContext());
-		
 		vm = new LogCaptureViewModel(this.getApplicationContext(), (LocationManager) getSystemService(Context.LOCATION_SERVICE));
-		
 		vm.addCreateLogDelegate(this);
 		
+		MainMenuViewModel menuVm = new MainMenuViewModel();
+		menuVm.addStartIntentDelegate(this);
+		
 		setAndBindRootView(R.layout.main, vm);
+		setAndBindOptionsMenu(R.menu.main_menu, menuVm);
 	}
 	
 	@Override
@@ -92,8 +91,8 @@ public class OpenLogbook extends BindingActivity implements CreateLogDelegate {
 	}
 	
 	private void updateLists(){
-		vm.cars.setArray(repository.getCars().toArray(new Car[0]));
-		vm.drivers.setArray(repository.getDrivers().toArray(new Person[0]));
+		vm.cars.setArray(getRepository().getCars().toArray(new Car[0]));
+		vm.drivers.setArray(getRepository().getDrivers().toArray(new Person[0]));
 	}
 
 	@Override
@@ -111,10 +110,15 @@ public class OpenLogbook extends BindingActivity implements CreateLogDelegate {
 	@Override
 	public void AddLog(Log log) {
 		try {
-			repository.add(log);
+			getRepository().add(log);
 		}
 		catch(DataAccessException dae){
 			//TODO: inform user
 		}
+	}
+
+	@Override
+	public void Start(Class<?> clazz) {
+		startActivity(new Intent(this, clazz));
 	}
 }
