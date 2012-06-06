@@ -50,4 +50,5 @@
 	<string name="DriverNameEmpty">Der Name des Fahrers darf nicht leer sein.</string>
 	<string name="OneDriverMinimum">Es muss mindestens ein Fahrer vorhanden sein.</string>
 	<string name="Modus">Modus</string>
+	<string name="Export">Export</string>
 </resources>

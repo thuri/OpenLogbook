@@ -25,6 +25,7 @@ import java.util.List;
 
 import net.lueckonline.android.openlogbook.activities.CreateCar;
 import net.lueckonline.android.openlogbook.activities.CreateDriver;
+import net.lueckonline.android.openlogbook.activities.Export;
 import net.lueckonline.android.openlogbook.activities.ModeSelection;
 import android.view.View;
 
@@ -52,6 +53,13 @@ public class MainMenuViewModel {
 		@Override
 		public void Invoke(View arg0, Object... arg1) {
 			startIntent(CreateDriver.class);
+		}
+	};
+	
+	public final Command openExport = new Command(){
+		@Override
+		public void Invoke(View arg0, Object... arg1) {
+			startIntent(Export.class);
 		}
 	};
 

@@ -20,4 +20,10 @@
         android:icon="@drawable/ic_launcher"
         binding:onClick="openModeSelection"
     />
+    <item 
+        android:id="@+id/export_menu" 
+        android:title="@string/Export"
+        android:icon="@drawable/ic_launcher"
+        binding:onClick="openExport"
+    />
 </menu>

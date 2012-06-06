@@ -21,8 +21,6 @@ package net.lueckonline.android.openlogbook.activities;
 import net.lueckonline.android.openlogbook.R;
 import net.lueckonline.android.openlogbook.activities.base.BaseActivity;
 import net.lueckonline.android.openlogbook.dataaccess.DataAccessException;
-import net.lueckonline.android.openlogbook.dataaccess.ILogbookRepository;
-import net.lueckonline.android.openlogbook.dataaccess.RepositoryFactory;
 import net.lueckonline.android.openlogbook.model.Person;
 import net.lueckonline.android.openlogbook.viewmodels.createdriver.CreateDriverDelegate;
 import net.lueckonline.android.openlogbook.viewmodels.createdriver.DriverCreateViewModel;
@@ -34,8 +32,6 @@ import android.os.Bundle;
  */
 public class CreateDriver extends BaseActivity implements CreateDriverDelegate{
 
-	private ILogbookRepository repository = null;
-	
 	private final DriverCreateViewModel vm = new DriverCreateViewModel();
 	
 	@Override
@@ -43,13 +39,11 @@ public class CreateDriver extends BaseActivity implements CreateDriverDelegate{
 		
 		super.onCreate(savedInstanceState);
 		
-		repository = RepositoryFactory.getInstance(getApplicationContext());
-		
 		this.vm.addDriverCreateDelegate(this);
 		
 		this.vm.addFinishDelegate(this);
 		
-		this.vm.drivers.setArray(repository.getDrivers().toArray(new Person[0]));
+		this.vm.drivers.setArray(getRepository().getDrivers().toArray(new Person[0]));
 		
 		this.setAndBindRootView(R.layout.createdriver, vm);
 		
@@ -74,7 +68,7 @@ public class CreateDriver extends BaseActivity implements CreateDriverDelegate{
 		}
 		
 		try{
-			repository.add(person);
+			getRepository().add(person);
 			vm.drivers.add(person);
 		}
 		catch(DataAccessException dae){

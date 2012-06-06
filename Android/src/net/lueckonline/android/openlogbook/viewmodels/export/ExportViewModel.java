@@ -16,33 +16,41 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-package net.lueckonline.android.openlogbook.dataaccess;
+package net.lueckonline.android.openlogbook.viewmodels.export;
 
+import gueei.binding.Command;
+
+import java.util.ArrayList;
 import java.util.List;
 
-import net.lueckonline.android.openlogbook.model.Car;
-import net.lueckonline.android.openlogbook.model.Log;
-import net.lueckonline.android.openlogbook.model.Person;
+import net.lueckonline.android.openlogbook.activities.StartExportDelegate;
+import android.view.View;
 
 /**
  * @author thuri
  *
  */
-public interface ILogbookRepository {
+public class ExportViewModel {
+	
+	private final List<StartExportDelegate> delegates = new ArrayList<StartExportDelegate>();
+	
+	public final Command export = new Command(){
+		@Override
+		public void Invoke(View arg0, Object... arg1) {
+			raiseStartExport();
+		}
+	};
 
-	public List<Car> getCars();
-	public void add(Car car) throws DataAccessException;
+	/**
+	 * @param delegate
+	 */
+	public void addStartExportDelegate(StartExportDelegate delegate) {
+		this.delegates.add(delegate);
+	}
 	
-	public List<Person> getDrivers();
-	public void add(Person driver) throws DataAccessException;
-	
-	public void add(Log log) throws DataAccessException;
-	
-	public int getMode();
-	public void setMode(int mode) throws DataAccessException;
-	
-	public long getLogCount();
-	public List<Log> getLogs(long l, long m);
-	public List<Log> getLogs();
-	
+	private void raiseStartExport(){
+		
+		for(StartExportDelegate d : delegates)
+			d.startExport();
+	}
 }

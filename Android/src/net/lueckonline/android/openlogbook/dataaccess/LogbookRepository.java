@@ -28,6 +28,7 @@ import net.lueckonline.android.openlogbook.utils.OperationModes;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -155,7 +156,7 @@ public class LogbookRepository implements ILogbookRepository {
 
 	@Override
 	public void setMode(int mode) throws DataAccessException {
-		SQLiteDatabase db = this.dbHelper.getReadableDatabase();
+		SQLiteDatabase db = this.dbHelper.getWritableDatabase();
 		
 		ContentValues values = new ContentValues();
 		values.put(DbHelper.SETTINGS_COLUMN_KEY, "Mode");
@@ -168,4 +169,25 @@ public class LogbookRepository implements ILogbookRepository {
 			throw new DataAccessException("Unable to set mode in database", sqlex);
 		}
 	}
+
+	@Override
+	public long getLogCount() {
+		SQLiteDatabase db = this.dbHelper.getReadableDatabase();
+		
+		return DatabaseUtils.longForQuery(db, "SELECT COUNT(*) FROM "+DbHelper.LOG_TABLE_NAME, null); 
+	}
+
+	@Override
+	public List<Log> getLogs(long l, long m) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Log> getLogs() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	
 }
