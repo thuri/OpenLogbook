@@ -28,20 +28,28 @@ import java.util.Date;
  */
 public class Log {
 	
+	private int id;
 	private Person driver;
 	private Car car;
 	private float distance;
 	private Date start;
 	private Date stop;
-	//private List<Person> passengers;
 	
 	/*
 	 * Getters and setters
 	 */
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+	
 	public Person getDriver() {
 		return driver;
 	}
-	
+
 	public void setDriver(Person driver) {
 		this.driver = driver;
 	}
@@ -78,12 +86,4 @@ public class Log {
 	public void setStop(Date stop) {
 		this.stop = stop;
 	}
-	
-	/*public List<Person> getPassengers() {
-		return passengers;
-	}
-	
-	public void setPassengers(List<Person> passengers) {
-		this.passengers = passengers;
-	}*/
 }

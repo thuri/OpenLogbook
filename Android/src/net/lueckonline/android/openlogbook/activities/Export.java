@@ -18,16 +18,14 @@
  */
 package net.lueckonline.android.openlogbook.activities;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.lueckonline.android.openlogbook.R;
 import net.lueckonline.android.openlogbook.activities.base.BaseActivity;
 import net.lueckonline.android.openlogbook.dataaccess.ILogbookRepository;
-import net.lueckonline.android.openlogbook.model.Log;
+import net.lueckonline.android.openlogbook.utils.ExportFile;
 import net.lueckonline.android.openlogbook.viewmodels.export.ExportViewModel;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -79,6 +77,8 @@ public class Export extends BaseActivity implements StartExportDelegate {
 		
 		@Override
 		protected Boolean doInBackground(TaskParams... params) {
+			boolean success = false;
+			
 			if(params == null || params.length != 1){
 				android.util.Log.e(ACTIVITY_SERVICE, "Can't execute task because of invalid Params");
 				return false;
@@ -92,40 +92,56 @@ public class Export extends BaseActivity implements StartExportDelegate {
 			}
 			
 			final long count = repo.getLogCount();
-			final long countPerLoop = 100;
-			final long limitPerLoop = count / countPerLoop;
-			
-			//0  / 100		= 0
-			//50 / 100		= 0
-			//100 / 100     = 1
-			//200 / 100		= 2
-			//1000 / 100	= 10
-			//10000 / 100	= 100
-			//25000 / 100   = 250
 
-			final List<Log> logs;
-
-			if(count < 10000){
-				logs = repo.getLogs();
-			}
-			else {
-				logs = new ArrayList<Log>();
+			ExportFile file = new ExportFile(getApplicationContext());
 			
-				for(int loop=0; loop < limitPerLoop; loop++){
-					logs.addAll(repo.getLogs(loop * countPerLoop, (loop + 1) * countPerLoop - 1)); 
+			try {
+				
+				file.open();
+				
+				final short steps = 100;
+				final long countPerLoop = count / 100;
+					
+				for(int loop=0; loop <= steps; loop++){
+					if(isCancelled())
+						break;
+					
+					long offset = loop * countPerLoop;
+//					long startTime = System.currentTimeMillis();
+					repo.exportLogs(offset, countPerLoop, file);
+//					Log.d(ACTIVITY_SERVICE, "Time to write "+countPerLoop+" logs:"+(System.currentTimeMillis() - startTime));
+					publishProgress(Math.min(steps - 1, loop + 1));
 				}
+				
+				final long lastStepCount = count - steps * countPerLoop;
+				if(lastStepCount > 0)
+					repo.exportLogs(steps * countPerLoop, lastStepCount + 1, file );
+				
+				if(!isCancelled())
+					success = true;
+			} 
+			catch (Exception e) {
+				success = false; 
+			}
+			finally {
+				file.close();
 			}
 			
-			if(!isCancelled()){
-				return true;
-			}
-			else
-				return false;
+			return success;
 		}
 
 		@Override
 		protected void onProgressUpdate(Integer... values) {
-		
+			ProgressBar pB = (ProgressBar) findViewById(R.id.exportProgressBar);
+			
+			pB.setProgress(values[0]);
+		}
+
+		@Override
+		protected void onPostExecute(Boolean result) {
+			ProgressBar pB = (ProgressBar) findViewById(R.id.exportProgressBar);
+			
+			pB.setVisibility(View.INVISIBLE);
 		}
 	}
 }

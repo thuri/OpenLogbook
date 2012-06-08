@@ -35,7 +35,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	 * CAR TABLE
 	 */
 	protected static final String 	CAR_TABLE_NAME 		= "cars";
-	protected static final String 	CAR_COLUMN_ID 		= "id";
+	protected static final String 	CAR_COLUMN_ID 		= "car_id";
 	protected static final String 	CAR_COLUMN_PLATE 	= "license_plate";
 	private static final String 	CAR_TABLE_CREATE 	= "CREATE TABLE "+CAR_TABLE_NAME+ " ("+
 															CAR_COLUMN_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+
@@ -45,7 +45,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	 * PERSON TABLE
 	 */
 	protected static final String 	PERSON_TABLE_NAME 		= "persons";
-	protected static final String 	PERSON_COLUMN_ID 		= "id";
+	protected static final String 	PERSON_COLUMN_ID 		= "person_id";
 	protected static final String 	PERSON_COLUMN_NAME 		= "name";
 	private static final String 	PERSON_TABLE_CREATE		= "CREATE TABLE "+PERSON_TABLE_NAME+" ("+
 																PERSON_COLUMN_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -55,7 +55,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	 * LOG TABLE
 	 */
 	protected static final String	LOG_TABLE_NAME 			= "logs";
-	protected static final String 	LOG_COLUMN_ID			= "id";
+	protected static final String 	LOG_COLUMN_ID			= "log_id";
 	protected static final String 	LOG_COLUMN_CAR_FK 		= "car_fk";
 	protected static final String 	LOG_COLUMN_DRIVER_FK 	= "driver_fk";
 	protected static final String 	LOG_COLUMN_START 		= "start";

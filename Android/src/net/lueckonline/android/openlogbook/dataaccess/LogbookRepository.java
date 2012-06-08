@@ -18,12 +18,14 @@
  */
 package net.lueckonline.android.openlogbook.dataaccess;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import net.lueckonline.android.openlogbook.model.Car;
 import net.lueckonline.android.openlogbook.model.Log;
 import net.lueckonline.android.openlogbook.model.Person;
+import net.lueckonline.android.openlogbook.utils.Exporter;
 import net.lueckonline.android.openlogbook.utils.OperationModes;
 import android.content.ContentValues;
 import android.content.Context;
@@ -170,24 +172,75 @@ public class LogbookRepository implements ILogbookRepository {
 		}
 	}
 
+	private final String logJoin = DbHelper.LOG_TABLE_NAME + " l " +
+			"JOIN " + DbHelper.CAR_TABLE_NAME+ " c ON (l."+ DbHelper.LOG_COLUMN_CAR_FK + " = c." + DbHelper.CAR_COLUMN_ID+") "+
+			"JOIN " + DbHelper.PERSON_TABLE_NAME+ " d ON (l."+DbHelper.LOG_COLUMN_DRIVER_FK+ " = d."+DbHelper.PERSON_COLUMN_ID+") "; 
+	
 	@Override
 	public long getLogCount() {
 		SQLiteDatabase db = this.dbHelper.getReadableDatabase();
 		
-		return DatabaseUtils.longForQuery(db, "SELECT COUNT(*) FROM "+DbHelper.LOG_TABLE_NAME, null); 
+		return DatabaseUtils.longForQuery(db, "SELECT COUNT(*) FROM "+logJoin, null); 
 	}
 
 	@Override
-	public List<Log> getLogs(long l, long m) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public void exportLogs(long offset, long limit, Exporter exporter) throws DataAccessException {
+		final SQLiteDatabase db = this.dbHelper.getReadableDatabase();
+		final Cursor query;
 
-	@Override
-	public List<Log> getLogs() {
-		// TODO Auto-generated method stub
-		return null;
+//		final long dbgStart = System.currentTimeMillis();
+		try{
+			query = db.query(logJoin
+					, null, null, null, null, null, DbHelper.LOG_COLUMN_START, offset+","+limit);
+		} 
+		catch(SQLException e){
+			throw new DataAccessException("Error while trying to fetch logs: "+e.getMessage(),e);
+		}
+//		long queryTime = System.currentTimeMillis() - dbgStart;
+//		android.util.Log.d(Context.ACTIVITY_SERVICE,"Time to fetch logs from db:"+ queryTime);
+		
+		String driver;
+		int driverIdx = query.getColumnIndex(DbHelper.PERSON_COLUMN_NAME);
+		String car;
+		int carIdx = query.getColumnIndex(DbHelper.CAR_COLUMN_PLATE);
+		long start;
+		int startIdx = query.getColumnIndex(DbHelper.LOG_COLUMN_START);
+		long stop;
+		int stopIdx = query.getColumnIndex(DbHelper.LOG_COLUMN_STOP);
+		float distance;
+		int distanceIdx = query.getColumnIndex(DbHelper.LOG_COLUMN_DISTANCE);
+		
+//		long startIterateQuery = System.currentTimeMillis();
+//		android.util.Log.d(Context.ACTIVITY_SERVICE, "query.getCount()="+query.getCount());
+//		int count = 0;
+		while(query.moveToNext()){
+			
+//			long startExportOneLog = System.currentTimeMillis();
+			driver = query.getString(driverIdx);
+			car = query.getString(carIdx);
+			start = query.getLong(startIdx);
+			stop = query.getLong(stopIdx);
+			distance = query.getFloat(distanceIdx);
+//			long fetchOneLogData = System.currentTimeMillis() - startExportOneLog;
+//			android.util.Log.d(Context.ACTIVITY_SERVICE, "Time to fetch data of one log:"+fetchOneLogData);
+			try {
+				exporter.export(driver, car, start, stop, distance);
+//				long writeOneLog = System.currentTimeMillis() - startExportOneLog - fetchOneLogData;
+//				android.util.Log.d(Context.ACTIVITY_SERVICE,"Time to write one log:"+writeOneLog);
+			}
+			catch(IOException e){
+				throw new DataAccessException("Unable to export all logs", e);
+			}
+//			count++;
+		}
+//		android.util.Log.d(Context.ACTIVITY_SERVICE, "counted iterations"+count);
+//		android.util.Log.d(Context.ACTIVITY_SERVICE, "time iterate through query"+(System.currentTimeMillis() - startIterateQuery));
+		
+//		long closingQuery = System.currentTimeMillis();
+		
+		query.close();
+		
+//		android.util.Log.d(Context.ACTIVITY_SERVICE, "Time to close query" + (System.currentTimeMillis() - closingQuery));
+		
 	}
-	
-	
 }

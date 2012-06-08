@@ -16,32 +16,30 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-package net.lueckonline.android.openlogbook.dataaccess;
+package net.lueckonline.android.openlogbook.utils;
 
-import java.util.List;
+import java.io.IOException;
 
-import net.lueckonline.android.openlogbook.model.Car;
 import net.lueckonline.android.openlogbook.model.Log;
-import net.lueckonline.android.openlogbook.model.Person;
-import net.lueckonline.android.openlogbook.utils.Exporter;
 
 /**
  * @author thuri
  *
  */
-public interface ILogbookRepository {
+public interface Exporter {
 
-	public List<Car> getCars();
-	public void add(Car car) throws DataAccessException;
+	/**
+	 * @param log
+	 * @throws IOException
+	 */
+	public void export(final Log log) throws IOException;
 	
-	public List<Person> getDrivers();
-	public void add(Person driver) throws DataAccessException;
-	
-	public void add(Log log) throws DataAccessException;
-	
-	public int getMode();
-	public void setMode(int mode) throws DataAccessException;
-	
-	public long getLogCount();
-	public void exportLogs(long offset, long limit, Exporter exporter) throws DataAccessException;
+	/**
+	 * @param driver
+	 * @param car
+	 * @param start
+	 * @param stop
+	 * @param distance
+	 */
+	void export(String driver, String car, long start, long stop, float distance) throws IOException;
 }
