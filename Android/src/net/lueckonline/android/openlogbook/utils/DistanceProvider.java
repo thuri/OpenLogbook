@@ -50,6 +50,7 @@ public class DistanceProvider implements android.location.LocationListener {
 	 */
 	public void Start(){
 		started = true;
+		this.distance = 0.0f;
 		locationMgr.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0,	this);
 	}
 	
@@ -65,7 +66,7 @@ public class DistanceProvider implements android.location.LocationListener {
 	 * Method resets the distance already determined
 	 */
 	public void Reset(){
-		
+		this.distance = 0.0f;
 	}
 	
 	/**

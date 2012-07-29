@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+ *  OpenLogbook - App logging driven distances and times
+ *  Copyright (C) 2012 Michael Lück
+ *
+ *  This program is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU General Public License
+ *  as published by the Free Software Foundation; either version 2
+ *  of the License, or (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ -->
+<resources>
+
+    <string name="hello">Willkommen bei OpenLogbook</string>
+    <string name="app_name">OpenLogbook</string>
+    <string name="Commuter">Pendler</string>
+    <string name="Fieldstaff">Außendienst</string>
+	<string name="CommitModeSelection">Auswählen</string>
+	<string name="StartGPS">GPS starten</string>
+	<string name="StopGPS">GPS stoppen</string>
+	<string name="Driver">Fahrer</string>
+	<string name="Drivers">Fahrer</string>
+	<string name="Distance">Strecke</string>
+	<string name="Metric">km</string>
+	<string name="Car">Fahrzeug</string>
+	<string name="Cars">Fahrzeuge</string>
+	<string name="starttime">Beginn</string>
+	<string name="stoptime">Ende</string>
+	<string name="licensePlate">Nummernschild</string>
+	<string name="driverName">Name</string>
+	<string name="btnAddDriver">Hinzufügen</string>
+	<string name="btnAddCar">Hinzufügen</string>
+	<string name="avaiableCars">Vorhandene Fahrzeuge</string>
+	<string name="btnFinishedText">Fertig</string>
+	<string name="ErrorAddingCar">Das Fahrzeug konnte nicht angelegt werden.</string>
+	<string name="InternalError">Es ist ein interner Fehler aufgetreten.</string>
+	<string name="LicensePlateEmpty">Das Nummernschild darf nicht leer sein.</string>
+	<string name="OneCarMinimum">Es muss mindestens ein Fahrzeug vorhanden sein.</string>
+	<string name="availableDrivers">Vorhandene Fahrer</string>
+	<string name="name">Name</string>
+	<string name="ErrorAddingDriver">Der Fahrer konnte nicht angelegt werden.</string>
+	<string name="DriverNameEmpty">Der Name des Fahrers darf nicht leer sein.</string>
+	<string name="OneDriverMinimum">Es muss mindestens ein Fahrer vorhanden sein.</string>
+	<string name="Modus">Modus</string>
+	<string name="Export">Export</string>
+</resources>

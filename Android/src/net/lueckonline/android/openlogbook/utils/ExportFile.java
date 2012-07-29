@@ -54,7 +54,7 @@ public class ExportFile implements Exporter {
 		
 	}
 
-	public boolean open(){
+	public boolean open() throws IOException{
 		try {
 			if(!this.file.exists())
 				this.file.createNewFile();
@@ -66,7 +66,7 @@ public class ExportFile implements Exporter {
 		}
 		catch(IOException e){
 			android.util.Log.e(android.content.Context.ACTIVITY_SERVICE, "Error while trying to open file");
-			return false;
+			throw e;
 		}
 	}
 
@@ -96,7 +96,7 @@ public class ExportFile implements Exporter {
 	public void export(String driver, String car, long start, long stop,
 			float distance) throws IOException{
 		
-		final Date date = new Date();
+		final Date date = new Date();		
 		
 		date.setTime(start);
 		out.append(dateFormat.format((date)));

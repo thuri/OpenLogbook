@@ -145,8 +145,8 @@ public class LogbookRepository implements ILogbookRepository {
 		values.put(DbHelper.LOG_COLUMN_CAR_FK, log.getCar().getId());
 		values.put(DbHelper.LOG_COLUMN_DRIVER_FK, log.getDriver().getId());
 		values.put(DbHelper.LOG_COLUMN_DISTANCE, log.getDistance());
-		values.put(DbHelper.LOG_COLUMN_START, log.getStart().getTime() / 1000);
-		values.put(DbHelper.LOG_COLUMN_STOP, log.getStop().getTime() / 1000);
+		values.put(DbHelper.LOG_COLUMN_START, log.getStart().getTime());
+		values.put(DbHelper.LOG_COLUMN_STOP, log.getStop().getTime());
 		
 		try {
 			db.insertOrThrow(DbHelper.LOG_TABLE_NAME, null, values);

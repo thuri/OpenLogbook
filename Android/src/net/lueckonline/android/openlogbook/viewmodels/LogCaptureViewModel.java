@@ -233,8 +233,7 @@ public class LogCaptureViewModel implements IDistanceChangedListener{
 	 * @param starttime the date to set as start time of new log to track
 	 */
 	private void startLogging(Date starttime) {
-		distanceProvider.Start();
-
+		
 		Log newLog = new Log();
 		newLog.setCar(this.log.getCar());
 		newLog.setDriver(this.log.getDriver());
@@ -247,6 +246,7 @@ public class LogCaptureViewModel implements IDistanceChangedListener{
 		
 		this.log.setStart(starttime);
 		
+		distanceProvider.Start();
 	}
 
 	/**

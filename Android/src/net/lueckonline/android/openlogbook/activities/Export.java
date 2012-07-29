@@ -25,7 +25,6 @@ import net.lueckonline.android.openlogbook.utils.ExportFile;
 import net.lueckonline.android.openlogbook.viewmodels.export.ExportViewModel;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -99,8 +98,8 @@ public class Export extends BaseActivity implements StartExportDelegate {
 				
 				file.open();
 				
-				final short steps = 100;
-				final long countPerLoop = count / 100;
+				final short steps = (short) Math.min(count, 100);
+				final long countPerLoop = count / steps;
 					
 				for(int loop=0; loop <= steps; loop++){
 					if(isCancelled())

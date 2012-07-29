@@ -5,25 +5,25 @@
     <item 
         android:id="@+id/drivers_menu" 
         android:title="@string/Drivers" 
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/driver"
         binding:onClick="openDriverCreate"
     />
     <item 
         android:id="@+id/cars_menu" 
         android:title="@string/Cars"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/car"
         binding:onClick="openCarCreate"
     />
-    <item 
-        android:id="@+id/mode_menu" 
-        android:title="@string/Modus"
-        android:icon="@drawable/ic_launcher"
-        binding:onClick="openModeSelection"
-    />
+<!--     <item  -->
+<!--         android:id="@+id/mode_menu"  -->
+<!--         android:title="@string/Modus" -->
+<!--         android:icon="@drawable/ic_launcher" -->
+<!--         binding:onClick="openModeSelection" -->
+<!--     /> -->
     <item 
         android:id="@+id/export_menu" 
         android:title="@string/Export"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/export"
         binding:onClick="openExport"
     />
 </menu>
