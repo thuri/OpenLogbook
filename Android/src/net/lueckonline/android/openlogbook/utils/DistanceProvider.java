@@ -23,13 +23,12 @@ import java.util.List;
 
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.Bundle;
 
 /**
  * @author thuri
  *
  */
-public class DistanceProvider implements android.location.LocationListener {
+public class DistanceProvider extends LocationAdapter {
 	
 	private float distance = 0.0f;
 	
@@ -37,7 +36,7 @@ public class DistanceProvider implements android.location.LocationListener {
 	
 	private Location lastLocation = null;
 	
-	private LocationManager locationMgr = null;
+	private final LocationManager locationMgr;
 	
 	private List<IDistanceChangedListener> listeners = new ArrayList<IDistanceChangedListener>();
 	
@@ -77,9 +76,8 @@ public class DistanceProvider implements android.location.LocationListener {
 	}
 	
 	private void OnDistanceChanged(){
-		for (IDistanceChangedListener l : this.listeners) {
+		for (IDistanceChangedListener l : this.listeners) 
 			l.DistanceChanged(this.distance);
-		}
 	}
 	
 	/* (non-Javadoc)
@@ -95,30 +93,6 @@ public class DistanceProvider implements android.location.LocationListener {
 		OnDistanceChanged();
 	}
 
-	/* (non-Javadoc)
-	 * @see android.location.LocationListener#onProviderDisabled(java.lang.String)
-	 */
-	@Override
-	public void onProviderDisabled(String arg0) {
-		//do nothing
-	}
-
-	/* (non-Javadoc)
-	 * @see android.location.LocationListener#onProviderEnabled(java.lang.String)
-	 */
-	@Override
-	public void onProviderEnabled(String arg0) {
-		//do nothing
-	}
-
-	/* (non-Javadoc)
-	 * @see android.location.LocationListener#onStatusChanged(java.lang.String, int, android.os.Bundle)
-	 */
-	@Override
-	public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
-		//do nothing
-	}
-
 	/* Getters and setters*/
 	
 	public float getDistance() {
@@ -127,5 +101,9 @@ public class DistanceProvider implements android.location.LocationListener {
 
 	public boolean isStarted() {
 		return started;
+	}
+
+	public boolean isEnabled() {
+		return locationMgr.isProviderEnabled(LocationManager.GPS_PROVIDER);
 	}
 }

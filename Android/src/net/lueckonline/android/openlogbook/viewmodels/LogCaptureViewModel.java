@@ -119,7 +119,7 @@ public class LogCaptureViewModel implements IDistanceChangedListener{
 	/**
 	 * the provider for the movement tracking system
 	 */
-	private DistanceProvider distanceProvider;
+	private final DistanceProvider distanceProvider;
 	
 	/**
 	 * Constructor 
@@ -234,6 +234,9 @@ public class LogCaptureViewModel implements IDistanceChangedListener{
 	 */
 	private void startLogging(Date starttime) {
 		
+		if(!distanceProvider.isEnabled())
+			raiseGPSDisabled();
+		
 		Log newLog = new Log();
 		newLog.setCar(this.log.getCar());
 		newLog.setDriver(this.log.getDriver());
@@ -301,5 +304,24 @@ public class LogCaptureViewModel implements IDistanceChangedListener{
 	private void raiseCreateLog(Log newLog) {
 		for(CreateLogDelegate d : this.delegates)
 			d.AddLog(newLog);
+	}
+
+	/*
+	 * onGPSDisabled Eventhandling
+	 */
+	
+	private final List<GPSDisabledDelegate> gpsDelegates = new ArrayList<GPSDisabledDelegate>();
+	
+	public void addGPSDisabledDelegate(GPSDisabledDelegate delegate){
+		this.gpsDelegates.add(delegate);
+	}
+
+	private void raiseGPSDisabled() {
+		for(GPSDisabledDelegate d : gpsDelegates)
+			d.onGPSDisabled();
+	}
+	
+	public interface GPSDisabledDelegate {
+		public void onGPSDisabled();
 	}
 }

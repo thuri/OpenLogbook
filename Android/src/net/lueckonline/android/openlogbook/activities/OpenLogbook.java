@@ -29,6 +29,7 @@ import net.lueckonline.android.openlogbook.model.Log;
 import net.lueckonline.android.openlogbook.model.Person;
 import net.lueckonline.android.openlogbook.utils.OperationModes;
 import net.lueckonline.android.openlogbook.viewmodels.LogCaptureViewModel;
+import net.lueckonline.android.openlogbook.viewmodels.LogCaptureViewModel.GPSDisabledDelegate;
 import net.lueckonline.android.openlogbook.viewmodels.createlog.CreateLogDelegate;
 import net.lueckonline.android.openlogbook.viewmodels.mainmenu.MainMenuViewModel;
 import net.lueckonline.android.openlogbook.viewmodels.mainmenu.StartIntentDelegate;
@@ -36,13 +37,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 
 public class OpenLogbook extends BaseActivity implements CreateLogDelegate, StartIntentDelegate {
 
 	private LogCaptureViewModel vm;
 	
 	private ILogbookRepository repository;
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
@@ -81,10 +83,16 @@ public class OpenLogbook extends BaseActivity implements CreateLogDelegate, Star
 		
 		vm = new LogCaptureViewModel(this.getApplicationContext(), (LocationManager) getSystemService(Context.LOCATION_SERVICE));
 		vm.addCreateLogDelegate(this);
+		vm.addGPSDisabledDelegate(new GPSDisabledDelegate() {
+			@Override
+			public void onGPSDisabled() {
+				startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+			}
+		});
 		
 		MainMenuViewModel menuVm = new MainMenuViewModel();
 		menuVm.addStartIntentDelegate(this);
-		
+				
 		setAndBindRootView(R.layout.main, vm);
 		setAndBindOptionsMenu(R.menu.main_menu, menuVm);
 	}
@@ -100,15 +108,6 @@ public class OpenLogbook extends BaseActivity implements CreateLogDelegate, Star
 		vm.cars.setArray(getRepository().getCars().toArray(new Car[0]));
 		vm.drivers.setArray(getRepository().getDrivers().toArray(new Person[0]));
 	}
-
-	/*@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (resultCode == Activity.RESULT_OK && requestCode == MODE_REQUEST) {
-			SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-			preferences.edit().putInt("Mode", data.getExtras().getInt("Mode"))
-					.commit();
-		}
-	}*/
 
 	/* (non-Javadoc)
 	 * @see net.lueckonline.android.openlogbook.viewmodels.createlog.CreateLogDelegate#AddLog(net.lueckonline.android.openlogbook.model.Log)
