@@ -85,8 +85,7 @@ public class CreateCar extends BaseActivity implements CreateCarDelegate {
 			vm.cars.add(newCar);
 		}
 		catch(DataAccessException dae){
-			//TODO:
-			//the user should see that the car couldn't be added because it won't appear in the list
+			//TODO: the user should see that the car couldn't be added because it won't appear in the list
 			//but in the future a Dialog should inform the user directly
 		}
 	}

@@ -72,8 +72,7 @@ public class CreateDriver extends BaseActivity implements CreateDriverDelegate{
 			vm.drivers.add(person);
 		}
 		catch(DataAccessException dae){
-			//TODO:
-			//the user should see that the driver couldn't be added because it won't appear in the list
+			//TODO: the user should see that the driver couldn't be added because it won't appear in the list
 			//but in the future a Dialog should inform the user directly
 		}
 	}

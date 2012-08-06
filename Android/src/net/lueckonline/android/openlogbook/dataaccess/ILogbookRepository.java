@@ -21,6 +21,7 @@ package net.lueckonline.android.openlogbook.dataaccess;
 import java.util.List;
 
 import net.lueckonline.android.openlogbook.model.Car;
+import net.lueckonline.android.openlogbook.model.Device;
 import net.lueckonline.android.openlogbook.model.Log;
 import net.lueckonline.android.openlogbook.model.Person;
 import net.lueckonline.android.openlogbook.utils.Exporter;
@@ -44,4 +45,9 @@ public interface ILogbookRepository {
 	
 	public long getLogCount();
 	public void exportLogs(long offset, long limit, Exporter exporter) throws DataAccessException;
+
+	public Person getBluetoothUser();
+	public void setBluetoothUser(Person user);
+
+	public List<Device> getDevices();
 }
