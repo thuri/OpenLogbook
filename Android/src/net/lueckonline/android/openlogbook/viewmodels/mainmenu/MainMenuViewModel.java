@@ -26,7 +26,7 @@ import java.util.List;
 import net.lueckonline.android.openlogbook.activities.CreateCar;
 import net.lueckonline.android.openlogbook.activities.CreateDriver;
 import net.lueckonline.android.openlogbook.activities.Export;
-import net.lueckonline.android.openlogbook.activities.ModeSelection;
+import net.lueckonline.android.openlogbook.activities.Preferences;
 import android.view.View;
 
 /**
@@ -35,10 +35,10 @@ import android.view.View;
  */
 public class MainMenuViewModel {
 
-	public final Command openModeSelection = new Command(){
+	public final Command openPreferences = new Command(){
 		@Override
 		public void Invoke(View arg0, Object... arg1) {
-			startIntent(ModeSelection.class);
+			startIntent(Preferences.class);
 		}
 	};
 	

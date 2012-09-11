@@ -14,12 +14,12 @@
         android:icon="@drawable/car"
         binding:onClick="openCarCreate"
     />
-<!--     <item  -->
-<!--         android:id="@+id/mode_menu"  -->
-<!--         android:title="@string/Modus" -->
-<!--         android:icon="@drawable/ic_launcher" -->
-<!--         binding:onClick="openModeSelection" -->
-<!--     /> -->
+    <item 
+        android:id="@+id/mode_menu" 
+        android:title="@string/Modus"
+        android:icon="@drawable/ic_launcher"
+        binding:onClick="openPreferences"
+    />
     <item 
         android:id="@+id/export_menu" 
         android:title="@string/Export"

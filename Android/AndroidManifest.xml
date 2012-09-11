@@ -21,7 +21,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.ModeSelection"></activity>
+        <activity android:name=".activities.Preferences"></activity>
         <activity android:name=".activities.CreateCar"></activity>
         <activity android:name=".activities.CreateDriver"></activity>
         <activity android:name=".activities.Export"></activity>

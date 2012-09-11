@@ -37,7 +37,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.provider.Settings;
 
 public class OpenLogbook extends BaseActivity implements CreateLogDelegate, StartIntentDelegate {
 
@@ -62,7 +61,7 @@ public class OpenLogbook extends BaseActivity implements CreateLogDelegate, Star
 
 		switch (mode) {
 			case OperationModes.UNKOWN:
-				Intent intent = new Intent(this, ModeSelection.class);
+				Intent intent = new Intent(this, Preferences.class);
 				Intent carIntent = new Intent(this, CreateCar.class);
 				Intent driverIntent = new Intent(this, CreateDriver.class);
 				// although startActivityForResult is asynchronous the View of this
@@ -86,7 +85,7 @@ public class OpenLogbook extends BaseActivity implements CreateLogDelegate, Star
 		vm.addGPSDisabledDelegate(new GPSDisabledDelegate() {
 			@Override
 			public void onGPSDisabled() {
-				startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+				startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
 			}
 		});
 		

@@ -216,6 +216,7 @@ public class BluetoothService extends IntentService {
 	 * @see #isDevicePresent(Device)
 	 */
 	private Device getPresentTriggerDevice() {
+		
 		Iterator<Device> devices = repository.getDevices().iterator();
 		
 		while(devices.hasNext()){

@@ -52,4 +52,7 @@
 	<string name="Modus">Mode</string>
 	<string name="Export">Export</string>
 	<string name="BluetoothDisabled">Please enable Bluetooth</string>
+	<string name="EnableBluetooth">Use Bluetooth</string>
+	<string name="PreferencesMode">Mode</string>
+	<string name="PreferencesBluetooth">Bluetooth Settings</string>
 </resources>

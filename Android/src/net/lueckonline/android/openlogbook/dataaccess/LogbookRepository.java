@@ -144,19 +144,19 @@ public class LogbookRepository implements ILogbookRepository {
 		
 		SQLiteDatabase db = this.dbHelper.getReadableDatabase();
 		Cursor query = db.query(deviceJoinCar, null, null, null, null, null, null);
-		final int carIdIdx = (query.getColumnIndex("c."+DbHelper.CAR_COLUMN_ID));
+		final int carIdIdx = (query.getColumnIndex(DbHelper.CAR_COLUMN_ID));
 		while(query.moveToNext()){
 			Car c = null;
 			
 			if(!query.isNull(carIdIdx)){ 
 				c = new Car();
 				c.setId(query.getInt(carIdIdx));
-				c.setLicensePlate(query.getString(query.getColumnIndex("c."+DbHelper.CAR_COLUMN_PLATE)));
+				c.setLicensePlate(query.getString(query.getColumnIndex(DbHelper.CAR_COLUMN_PLATE)));
 			}
 			
 			Device d = new Device();
 			d.setCar(c);
-			d.setName(query.getString(query.getColumnIndex("d."+DbHelper.DEVICE_COLUMN_NAME)));
+			d.setName(query.getString(query.getColumnIndex(DbHelper.DEVICE_COLUMN_NAME)));
 			
 			devices.add(d);
 		}
@@ -229,14 +229,24 @@ public class LogbookRepository implements ILogbookRepository {
 
 	@Override
 	public void setMode(int mode) throws DataAccessException {
+		
+		final String whereClause = DbHelper.SETTINGS_COLUMN_KEY+"=?";
+		final String[] whereArgs = new String[]{"Mode"};
+		
+		SQLiteDatabase rdb = this.dbHelper.getReadableDatabase();
+		Cursor query = rdb.query(DbHelper.SETTINGS_TABLE_NAME, null, whereClause, whereArgs, null, null, null);
+		
 		SQLiteDatabase db = this.dbHelper.getWritableDatabase();
 
 		ContentValues values = new ContentValues();
 		values.put(DbHelper.SETTINGS_COLUMN_KEY, "Mode");
 		values.put(DbHelper.SETTINGS_COLUMN_VALUE, mode);
-
+		
 		try {
-			db.insertOrThrow(DbHelper.SETTINGS_TABLE_NAME, null, values);
+			if(query.getCount() == 0)		
+				db.insertOrThrow(DbHelper.SETTINGS_TABLE_NAME, null, values);
+			else
+				db.update(DbHelper.SETTINGS_TABLE_NAME, values, whereClause, whereArgs);
 		} catch (SQLException sqlex) {
 			throw new DataAccessException("Unable to set mode in database",
 					sqlex);
