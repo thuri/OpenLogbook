@@ -32,7 +32,16 @@ import android.view.View;
  */
 public class PreferencesViewModel {
 	
-	private final PreferencesDelegate controller;
+	public interface Eventhandler {
+		
+		public void onModeChanged(int newMode);
+		
+		public void onFinish();
+
+		public void onAddDevice();
+	}
+	
+	private final Eventhandler controller;
 	
 	public final Command modeClicked = new Command(){
 		@Override
@@ -58,8 +67,15 @@ public class PreferencesViewModel {
 	
 	public final Command finish = new Command(){
 		@Override
-		public void Invoke(View arg0, Object... arg1) {
+		public void Invoke(View button, Object... arg1) {
 			controller.onFinish();
+		}
+	};
+	
+	public final Command addDevice = new Command(){
+		@Override
+		public void Invoke(View button, Object... arg1) {
+			controller.onAddDevice();
 		}
 	};
 	
@@ -69,7 +85,7 @@ public class PreferencesViewModel {
 	
 	public final BooleanObservable isFieldstaff = new BooleanObservable();
 	
-	public PreferencesViewModel(PreferencesDelegate controller){
+	public PreferencesViewModel(Eventhandler controller){
 		this.controller = controller;
 	}
 	

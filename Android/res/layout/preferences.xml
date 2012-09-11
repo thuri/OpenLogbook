@@ -38,8 +38,6 @@
         android:background="@drawable/border"
         android:orientation="vertical" >
 
-       
-
         <RadioGroup
             android:id="@+id/radioGroupMode"
             android:layout_width="fill_parent"
@@ -80,7 +78,6 @@
         android:layout_weight="1000"
         android:background="@drawable/border"
         android:orientation="vertical" >
-
         
         <!--
 		starts the service if not already started. 
@@ -98,9 +95,18 @@
             android:id="@+id/triggerDevices"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="1000"
             binding:itemSource="triggerDevices"
-            binding:itemTemplate="@layout/triggerdevice" >
-        </ListView>
+            binding:itemTemplate="@layout/triggerdevice" />
+        
+        <Button
+            android:id="@+id/btnAddDevice"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginRight="100dip"
+            android:text="@string/AddDevice"
+            binding:onClick="addDevice" />
         
     </LinearLayout>
 
@@ -110,6 +116,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical">
+
 	</LinearLayout>
 	
      <Button

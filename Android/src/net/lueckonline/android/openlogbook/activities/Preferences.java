@@ -26,12 +26,13 @@ import net.lueckonline.android.openlogbook.activities.base.BaseActivity;
 import net.lueckonline.android.openlogbook.dataaccess.DataAccessException;
 import net.lueckonline.android.openlogbook.dataaccess.ILogbookRepository;
 import net.lueckonline.android.openlogbook.dataaccess.RepositoryFactory;
+import net.lueckonline.android.openlogbook.dialogs.AddTrigger;
 import net.lueckonline.android.openlogbook.model.Device;
-import net.lueckonline.android.openlogbook.viewmodels.preferences.PreferencesDelegate;
 import net.lueckonline.android.openlogbook.viewmodels.preferences.PreferencesViewModel;
+import android.app.Dialog;
 import android.os.Bundle;
 
-public class Preferences extends BaseActivity implements PreferencesDelegate{
+public class Preferences extends BaseActivity implements PreferencesViewModel.Eventhandler{
 
 	private PreferencesViewModel vm = new PreferencesViewModel(this);
 	
@@ -57,9 +58,6 @@ public class Preferences extends BaseActivity implements PreferencesDelegate{
 		
 		setAndBindRootView(R.layout.preferences, vm);
 		
-//		setContentView(R.layout.preferences);
-//		Button btn = (Button) findViewById(R.id.btnCommitMode);
-//		btn.setOnClickListener(this);
 	}
 
 	@Override
@@ -70,6 +68,21 @@ public class Preferences extends BaseActivity implements PreferencesDelegate{
 		} catch (DataAccessException e) {
 			//TODO: inform user
 		}
+	}
+
+	@Override
+	public void onAddDevice() {
+		showDialog(0);
+	}
+	
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		
+		if(id == 0){
+			return new AddTrigger(this);
+		}
+		else
+			return null;
 	}
 
 	@Override

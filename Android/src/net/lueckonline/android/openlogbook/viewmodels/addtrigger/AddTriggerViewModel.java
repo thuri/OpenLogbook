@@ -16,40 +16,39 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-package net.lueckonline.android.openlogbook.dataaccess;
+package net.lueckonline.android.openlogbook.viewmodels.addtrigger;
 
-import java.util.List;
-
+import gueei.binding.Command;
+import gueei.binding.collections.ArrayListObservable;
 import net.lueckonline.android.openlogbook.model.Car;
 import net.lueckonline.android.openlogbook.model.Device;
-import net.lueckonline.android.openlogbook.model.Log;
-import net.lueckonline.android.openlogbook.model.Person;
-import net.lueckonline.android.openlogbook.utils.Exporter;
+import android.view.View;
 
 /**
  * @author thuri
  *
  */
-public interface ILogbookRepository {
+public class AddTriggerViewModel {
 
-	public List<Car> getCars();
-	public void add(Car car) throws DataAccessException;
+	public final ArrayListObservable<Car> cars = new ArrayListObservable<Car>(Car.class);
 	
-	public List<Person> getDrivers();
-	public void add(Person driver) throws DataAccessException;
+	public final ArrayListObservable<Device> devices = new ArrayListObservable<Device>(Device.class);
 	
-	public void add(Log log) throws DataAccessException;
-	
-	public int getMode();
-	public void setMode(int mode) throws DataAccessException;
-	
-	public long getLogCount();
-	public void exportLogs(long offset, long limit, Exporter exporter) throws DataAccessException;
+	public final Command deviceSelected = new Command(){
+		@Override
+		public void Invoke(View arg0, Object... arg1) {
+		}
+	};
 
-	public Person getBluetoothUser();
-	public void setBluetoothUser(Person user);
-
-	public List<Device> getDevices();
-
-	void add(Device device) throws DataAccessException;
+	public final Command carSelected = new Command(){
+		@Override
+		public void Invoke(View arg0, Object... arg1) {
+		}
+	}; 
+	
+	public final Command finish = new Command(){
+		@Override
+		public void Invoke(View arg0, Object... arg1) {
+		}
+	};
 }

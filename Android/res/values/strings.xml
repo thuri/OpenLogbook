@@ -55,4 +55,8 @@
 	<string name="EnableBluetooth">Use Bluetooth</string>
 	<string name="PreferencesMode">Mode</string>
 	<string name="PreferencesBluetooth">Bluetooth Settings</string>
+	<string name="AddDevice">Add Trigger Device</string>
+	<string name="selectTrigger">Select a trigger device</string>
+	<string name="selectCar">Select a car</string>
+	<string name="FinishAddTrigger">Finish</string>
 </resources>

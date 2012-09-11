@@ -28,6 +28,19 @@ package net.lueckonline.android.openlogbook.model;
  */
 public class Device {
 
+	public Device(){
+		
+	}
+	
+	public Device(String name){
+		this.name = name;
+	}
+	
+	public Device(String name, Car car){
+		this.car = car;
+		this.name = name;
+	}
+	
 	/**
 	 * @see #setCar(Car)
 	 */
@@ -77,4 +90,11 @@ public class Device {
 		this.name = name;
 	}
 
+	@Override
+	public String toString() {
+		if(this.name == null && this.car == null)
+			return super.toString();
+		
+		return (this.name == null ? "" : this.name) + (this.car == null ? "" : "|"+this.car.getLicensePlate());
+	}
 }

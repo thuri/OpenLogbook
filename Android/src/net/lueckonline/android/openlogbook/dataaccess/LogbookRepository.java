@@ -226,6 +226,21 @@ public class LogbookRepository implements ILogbookRepository {
 					sqlex);
 		}
 	}
+	
+	public void add(Device device) throws DataAccessException {
+		SQLiteDatabase db = this.dbHelper.getWritableDatabase();
+		
+		ContentValues values = new ContentValues();
+		values.put(DbHelper.DEVICE_COLUMN_NAME, device.getName());
+		if(device.getCar() != null)
+			values.put(DbHelper.DEVICE_COLUMN_CAR_FK, device.getCar().getId());
+		
+		try{
+			db.insertOrThrow(DbHelper.DEVICE_TABLE_NAME, null, values);
+		}catch(SQLException sqlex){
+			throw new DataAccessException("Unable to add device to database", sqlex);
+		}
+	}
 
 	@Override
 	public void setMode(int mode) throws DataAccessException {
