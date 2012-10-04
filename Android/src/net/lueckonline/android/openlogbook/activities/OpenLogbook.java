@@ -54,23 +54,19 @@ public class OpenLogbook extends BaseActivity implements CreateLogDelegate, Star
 		
 		repository = RepositoryFactory.getInstance(getApplicationContext());
 
-		//SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-		//int mode = preferences.getInt(LogbookConstants.MODE_PREFKEY, OperationModes.UNKOWN);
-		
 		int mode = repository.getMode();
 
 		switch (mode) {
 			case OperationModes.UNKOWN:
+				
 				Intent intent = new Intent(this, Preferences.class);
 				Intent carIntent = new Intent(this, CreateCar.class);
 				Intent driverIntent = new Intent(this, CreateDriver.class);
-				// although startActivityForResult is asynchronous the View of this
-				// onCreate will not be displayed
-				// until the Activity Returned a result (see Android Dev Doku)
+				
+				startActivity(intent);
 				startActivity(carIntent);
 				startActivity(driverIntent);
-				startActivity(intent);
-				//startActivityForResult(intent, MODE_REQUEST);
+				
 				break;
 			case OperationModes.COMMUTER:
 			case OperationModes.FIELDSTAFF:

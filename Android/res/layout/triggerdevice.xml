@@ -4,5 +4,6 @@
     xmlns:binding="http://www.gueei.com/android-binding/"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content" 
+    android:textSize="20dip"
     binding:text="."
 />

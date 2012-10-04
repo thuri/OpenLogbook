@@ -228,17 +228,33 @@ public class LogbookRepository implements ILogbookRepository {
 	}
 	
 	public void add(Device device) throws DataAccessException {
-		SQLiteDatabase db = this.dbHelper.getWritableDatabase();
+		SQLiteDatabase writeDb = this.dbHelper.getWritableDatabase();
+		SQLiteDatabase readDb = this.dbHelper.getReadableDatabase();
 		
 		ContentValues values = new ContentValues();
 		values.put(DbHelper.DEVICE_COLUMN_NAME, device.getName());
-		if(device.getCar() != null)
-			values.put(DbHelper.DEVICE_COLUMN_CAR_FK, device.getCar().getId());
 		
-		try{
-			db.insertOrThrow(DbHelper.DEVICE_TABLE_NAME, null, values);
-		}catch(SQLException sqlex){
-			throw new DataAccessException("Unable to add device to database", sqlex);
+		String where = DbHelper.DEVICE_COLUMN_NAME+"=?";
+		ArrayList<String> whereArgs = new ArrayList<String>();
+		whereArgs.add(device.getName());
+		
+		if(device.getCar() != null){
+			values.put(DbHelper.DEVICE_COLUMN_CAR_FK, device.getCar().getId());
+			where +=" and "+DbHelper.DEVICE_COLUMN_CAR_FK +"=?";
+			whereArgs.add(String.valueOf(device.getCar().getId()));
+		}
+		
+		Cursor query = readDb.query(DbHelper.DEVICE_TABLE_NAME, null, where, whereArgs.toArray(new String[0]), null, null, null);
+		
+		if(query.getCount() == 0){
+			try{
+				writeDb.insertOrThrow(DbHelper.DEVICE_TABLE_NAME, null, values);
+			}catch(SQLException sqlex){
+				throw new DataAccessException("Unable to add device to database", sqlex);
+			}
+		}
+		else {
+			throw new DataAccessException("Combination of device and car already added");
 		}
 	}
 

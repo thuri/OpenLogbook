@@ -31,7 +31,6 @@ import net.lueckonline.android.openlogbook.model.Device;
 import net.lueckonline.android.openlogbook.viewmodels.preferences.PreferencesViewModel;
 import android.app.Dialog;
 import android.os.Bundle;
-import android.util.Log;
 
 public class Preferences extends BaseActivity implements PreferencesViewModel.Eventhandler, AddTriggerDialog.Eventhandler{
 
@@ -79,7 +78,6 @@ public class Preferences extends BaseActivity implements PreferencesViewModel.Ev
 	@Override
 	public void onAddDevice() {
 		showDialog(CREATE_TRIGGER_DIALOG);
-		Log.d(this.getClass().getName(), "showDialog called");
 	}
 	
 	@Override
@@ -92,8 +90,7 @@ public class Preferences extends BaseActivity implements PreferencesViewModel.Ev
 		
 		if(id == CREATE_TRIGGER_DIALOG){
 			//TODO: add the new Trigger device defined in the Dialog to the trigger devices list in the view model
-			AddTriggerDialog addTrigger = new AddTriggerDialog(this, this);
-			return addTrigger;
+			return new AddTriggerDialog(this, this);
 		}
 		else
 			return null;

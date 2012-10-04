@@ -46,7 +46,7 @@ public class AddTriggerDialog extends BindingDialog {
 	
 	private ViewModel vm;
 
-	private final Eventhandler handler;
+	private final Eventhandler controller;
 	
 	public interface Eventhandler {
 		public void onTriggerAdded(Device device);
@@ -55,10 +55,10 @@ public class AddTriggerDialog extends BindingDialog {
 	/**
 	 * @param context
 	 */
-	public AddTriggerDialog(Context context, Eventhandler handler) {
+	public AddTriggerDialog(Context context, Eventhandler controller) {
 		super(context);
 
-		this.handler = handler;
+		this.controller = controller;
 		this.repository = RepositoryFactory.getInstance(context);
 		this.setTitle(R.string.AddDevice);
 	}
@@ -67,7 +67,9 @@ public class AddTriggerDialog extends BindingDialog {
 	protected void onCreate(Bundle savedInstanceState) {
 		vm = new ViewModel();
 		
-		vm.cars.setArray(repository.getCars().toArray(new Car[0]));
+		//call add on the collection because it may (and it will) already contain values we don't want to override
+		//for example the "No Car" entry, defining that a new trigger device is not bound to any car!
+		vm.cars.addAll(repository.getCars());
 		
 		BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
 		Iterator<BluetoothDevice> iterator = btAdapter.getBondedDevices().iterator();
@@ -86,7 +88,11 @@ public class AddTriggerDialog extends BindingDialog {
 	
 	public void onDeviceSelected(Device device){
 		try {
+			//if this fails, we won't call the controller because an exception is thrown. That's OK because 
+			//the controller only needs to know if the device was added!
 			this.repository.add(device);
+			//call the controller so it can add the new device to the list of already added devices!
+			this.controller.onTriggerAdded(this.vm.device);
 		} catch (DataAccessException e) {
 			//TODO inform user
 		}
@@ -94,7 +100,6 @@ public class AddTriggerDialog extends BindingDialog {
 
 	public void onFinish(){
 		this.hide();
-		this.handler.onTriggerAdded(this.vm.device);
 	}
 
 	private class ViewModel {
@@ -104,6 +109,15 @@ public class AddTriggerDialog extends BindingDialog {
 		public final ArrayListObservable<Device> devices = new ArrayListObservable<Device>(Device.class);
 
 		private final Device device = new Device();
+		
+		public ViewModel(){
+			//Add a default "Car" representing that a new trigger device won't be bound to a car, an headset for example!
+			Car car = new Car();
+			car.setLicensePlate(getContext().getString(R.string.NoCar));
+			//Define an negative id to show that this is not a valid entry
+			car.setId(-1);
+			this.cars.add(car);
+		}
 		
 		@SuppressWarnings("unused")
 		public final Command deviceSelected = new Command(){
@@ -119,7 +133,11 @@ public class AddTriggerDialog extends BindingDialog {
 			@Override
 			public void Invoke(View spinner, Object... arg1) {
 				Integer pos = (Integer)arg1[1];
-				device.setCar(cars.getItem(pos));
+				Car selectedCar = cars.getItem(pos);
+				//check that the selected car is not the "No Car" Entry. If so set the car reference of the current device to null
+				if(selectedCar != null && selectedCar.getId() == -1)
+					selectedCar = null;
+				device.setCar(selectedCar);
 			}
 		}; 
 		

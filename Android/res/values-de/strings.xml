@@ -51,4 +51,5 @@
 	<string name="OneDriverMinimum">Es muss mindestens ein Fahrer vorhanden sein.</string>
 	<string name="Modus">Modus</string>
 	<string name="Export">Export</string>
+	<string name="NoCar">Kein Fahrzeug</string>
 </resources>

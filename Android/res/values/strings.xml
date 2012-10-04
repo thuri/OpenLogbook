@@ -59,4 +59,5 @@
 	<string name="selectTrigger">Select a trigger device</string>
 	<string name="selectCar">Select a car</string>
 	<string name="FinishAddTrigger">Finish</string>
+	<string name="NoCar">No Car</string>
 </resources>

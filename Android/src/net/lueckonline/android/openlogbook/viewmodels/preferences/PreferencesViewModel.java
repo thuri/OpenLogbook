@@ -104,7 +104,5 @@ public class PreferencesViewModel {
 				isCommuter.set(false);
 				break;
 		}
-		
-
 	}
 }
