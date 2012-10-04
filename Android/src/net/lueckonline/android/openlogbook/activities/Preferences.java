@@ -26,13 +26,19 @@ import net.lueckonline.android.openlogbook.activities.base.BaseActivity;
 import net.lueckonline.android.openlogbook.dataaccess.DataAccessException;
 import net.lueckonline.android.openlogbook.dataaccess.ILogbookRepository;
 import net.lueckonline.android.openlogbook.dataaccess.RepositoryFactory;
-import net.lueckonline.android.openlogbook.dialogs.AddTrigger;
+import net.lueckonline.android.openlogbook.dialogs.AddTriggerDialog;
 import net.lueckonline.android.openlogbook.model.Device;
 import net.lueckonline.android.openlogbook.viewmodels.preferences.PreferencesViewModel;
 import android.app.Dialog;
 import android.os.Bundle;
+import android.util.Log;
 
-public class Preferences extends BaseActivity implements PreferencesViewModel.Eventhandler{
+public class Preferences extends BaseActivity implements PreferencesViewModel.Eventhandler, AddTriggerDialog.Eventhandler{
+
+	/**
+	 * 
+	 */
+	private static final int CREATE_TRIGGER_DIALOG = 0;
 
 	private PreferencesViewModel vm = new PreferencesViewModel(this);
 	
@@ -72,14 +78,22 @@ public class Preferences extends BaseActivity implements PreferencesViewModel.Ev
 
 	@Override
 	public void onAddDevice() {
-		showDialog(0);
+		showDialog(CREATE_TRIGGER_DIALOG);
+		Log.d(this.getClass().getName(), "showDialog called");
+	}
+	
+	@Override
+	public void onTriggerAdded(Device device) {
+		this.vm.triggerDevices.add(device);
 	}
 	
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		
-		if(id == 0){
-			return new AddTrigger(this);
+		if(id == CREATE_TRIGGER_DIALOG){
+			//TODO: add the new Trigger device defined in the Dialog to the trigger devices list in the view model
+			AddTriggerDialog addTrigger = new AddTriggerDialog(this, this);
+			return addTrigger;
 		}
 		else
 			return null;
@@ -89,5 +103,7 @@ public class Preferences extends BaseActivity implements PreferencesViewModel.Ev
 	public void onFinish() {
 		finish();
 	}
+
+	
 	
 }

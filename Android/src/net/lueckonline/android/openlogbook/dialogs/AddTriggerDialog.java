@@ -30,7 +30,6 @@ import net.lueckonline.android.openlogbook.dataaccess.ILogbookRepository;
 import net.lueckonline.android.openlogbook.dataaccess.RepositoryFactory;
 import net.lueckonline.android.openlogbook.model.Car;
 import net.lueckonline.android.openlogbook.model.Device;
-import net.lueckonline.android.openlogbook.viewmodels.common.FinishDelegate;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
@@ -41,18 +40,25 @@ import android.view.View;
  * @author thuri
  *
  */
-public class AddTrigger extends BindingDialog {
+public class AddTriggerDialog extends BindingDialog {
 
 	private final ILogbookRepository repository;
 	
 	private ViewModel vm;
+
+	private final Eventhandler handler;
+	
+	public interface Eventhandler {
+		public void onTriggerAdded(Device device);
+	}
 	
 	/**
 	 * @param context
 	 */
-	public AddTrigger(Context context) {
+	public AddTriggerDialog(Context context, Eventhandler handler) {
 		super(context);
-		
+
+		this.handler = handler;
 		this.repository = RepositoryFactory.getInstance(context);
 		this.setTitle(R.string.AddDevice);
 	}
@@ -88,6 +94,7 @@ public class AddTrigger extends BindingDialog {
 
 	public void onFinish(){
 		this.hide();
+		this.handler.onTriggerAdded(this.vm.device);
 	}
 
 	private class ViewModel {
@@ -103,7 +110,7 @@ public class AddTrigger extends BindingDialog {
 			@Override
 			public void Invoke(View spinner, Object... arg1) {
 				Integer pos = (Integer)arg1[1];
-				device.setCar(cars.getItem(pos));
+				device.setName(devices.getItem(pos).getName());
 			}
 		};
 
@@ -112,7 +119,7 @@ public class AddTrigger extends BindingDialog {
 			@Override
 			public void Invoke(View spinner, Object... arg1) {
 				Integer pos = (Integer)arg1[1];
-				device.setName(devices.getItem(pos).getName());
+				device.setCar(cars.getItem(pos));
 			}
 		}; 
 		
