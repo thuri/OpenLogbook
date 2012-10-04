@@ -28,8 +28,11 @@ import net.lueckonline.android.openlogbook.dataaccess.ILogbookRepository;
 import net.lueckonline.android.openlogbook.dataaccess.RepositoryFactory;
 import net.lueckonline.android.openlogbook.dialogs.AddTriggerDialog;
 import net.lueckonline.android.openlogbook.model.Device;
+import net.lueckonline.android.openlogbook.services.BluetoothService;
 import net.lueckonline.android.openlogbook.viewmodels.preferences.PreferencesViewModel;
+import android.app.ActivityManager;
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 
 public class Preferences extends BaseActivity implements PreferencesViewModel.Eventhandler, AddTriggerDialog.Eventhandler{
@@ -39,13 +42,16 @@ public class Preferences extends BaseActivity implements PreferencesViewModel.Ev
 	 */
 	private static final int CREATE_TRIGGER_DIALOG = 0;
 
-	private PreferencesViewModel vm = new PreferencesViewModel(this);
+	private PreferencesViewModel vm;
 	
 	private ILogbookRepository repository;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		
 		super.onCreate(savedInstanceState);
+		
+		this.vm = new PreferencesViewModel(this, (ActivityManager) getSystemService(ACTIVITY_SERVICE));
 		
 		this.repository = RepositoryFactory.getInstance(getApplicationContext());
 		
@@ -99,6 +105,16 @@ public class Preferences extends BaseActivity implements PreferencesViewModel.Ev
 	@Override
 	public void onFinish() {
 		finish();
+	}
+
+	@Override
+	public void onStartService() {
+		startService(new Intent(this, BluetoothService.class));
+	}
+
+	@Override
+	public void onStopService() {
+		stopService(new Intent(this, BluetoothService.class));
 	}
 
 	

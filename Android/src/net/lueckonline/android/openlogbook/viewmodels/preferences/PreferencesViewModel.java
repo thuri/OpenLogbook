@@ -23,8 +23,12 @@ import gueei.binding.collections.ArrayListObservable;
 import gueei.binding.observables.BooleanObservable;
 import net.lueckonline.android.openlogbook.R;
 import net.lueckonline.android.openlogbook.model.Device;
+import net.lueckonline.android.openlogbook.services.BluetoothService;
 import net.lueckonline.android.openlogbook.utils.OperationModes;
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningServiceInfo;
 import android.view.View;
+import android.widget.CheckBox;
 
 /**
  * @author thuri
@@ -39,6 +43,10 @@ public class PreferencesViewModel {
 		public void onFinish();
 
 		public void onAddDevice();
+		
+		public void onStartService();
+		
+		public void onStopService();
 	}
 	
 	private final Eventhandler controller;
@@ -79,14 +87,44 @@ public class PreferencesViewModel {
 		}
 	};
 	
+	public final Command toggleBluetooth = new Command(){
+
+		@Override
+		public void Invoke(View button, Object... arg1) {
+			CheckBox cb = (CheckBox) button;
+			if(cb.isChecked())
+				controller.onStartService();
+			else
+				controller.onStopService();
+		}
+		
+	};
+	
 	public final ArrayListObservable<Device> triggerDevices = new ArrayListObservable<Device>(Device.class);
 	
 	public final BooleanObservable isCommuter = new BooleanObservable();
 	
 	public final BooleanObservable isFieldstaff = new BooleanObservable();
 	
-	public PreferencesViewModel(Eventhandler controller){
+	public final BooleanObservable isBluetoothServiceRunning = new BooleanObservable();
+	
+	private final ActivityManager activityMgr;
+	
+	private boolean isBTServiceRunning(){
+	    for (RunningServiceInfo service : activityMgr.getRunningServices(Integer.MAX_VALUE)) {
+	    	if (BluetoothService.class.getName().equals(service.service.getClassName())) 
+	            return true;
+	    }
+	    return false;
+	}
+	
+	public PreferencesViewModel(Eventhandler controller, ActivityManager activityMgr){
 		this.controller = controller;
+		
+		this.isCommuter.set(true);
+		
+		this.activityMgr = activityMgr;
+		this.isBluetoothServiceRunning.set(isBTServiceRunning());
 	}
 	
 	public void setOperationMode(int mode){

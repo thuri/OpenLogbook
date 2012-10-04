@@ -47,7 +47,7 @@ import android.provider.Settings;
  * 
  */
 public class BluetoothService extends IntentService {
-
+	
 	private BluetoothAdapter btAdapter;
 	private DistanceProvider distanceProvider;
 	private Device currentTrigger;

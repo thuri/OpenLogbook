@@ -89,7 +89,9 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:checked="false"
-            android:text="@string/EnableBluetooth" />
+            android:text="@string/EnableBluetooth" 
+            binding:checked="isBluetoothServiceRunning"
+            binding:onClick="toggleBluetooth"/>
 
         <ListView
             android:id="@+id/triggerDevices"
