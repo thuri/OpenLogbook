@@ -1,0 +1,5 @@
+- FINISH Button auf Preferences Screen
+- BroadcastReceiver wird vom System gekillt, wenn Ressourcen Mangel besteht, nach onReceive
+ - Korrektur: Nicht der BroadcastReceiver wird gekillt, sondern der Prozess in dem er läuft
+	=> das bedeutet, wenn richtig verstanden, dass der Broadcast Receiver in einem Service registriert werden sollte, da der Prozess des Services selten gekllt und wenn dann erneut gestartet wird.
+	=> Service starten aus Preferences Activity wenn Checkbox gesetzt.

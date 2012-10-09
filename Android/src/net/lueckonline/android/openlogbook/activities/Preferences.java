@@ -31,15 +31,13 @@ import net.lueckonline.android.openlogbook.model.Device;
 import net.lueckonline.android.openlogbook.services.BluetoothService;
 import net.lueckonline.android.openlogbook.viewmodels.preferences.PreferencesViewModel;
 import android.app.ActivityManager;
+import android.app.ActivityManager.RunningServiceInfo;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 
 public class Preferences extends BaseActivity implements PreferencesViewModel.Eventhandler, AddTriggerDialog.Eventhandler{
 
-	/**
-	 * 
-	 */
 	private static final int CREATE_TRIGGER_DIALOG = 0;
 
 	private PreferencesViewModel vm;
@@ -51,24 +49,28 @@ public class Preferences extends BaseActivity implements PreferencesViewModel.Ev
 		
 		super.onCreate(savedInstanceState);
 		
-		this.vm = new PreferencesViewModel(this, (ActivityManager) getSystemService(ACTIVITY_SERVICE));
+		this.vm = new PreferencesViewModel(this);
+		this.vm.isBluetoothServiceRunning.set(isBTServiceRunning());
 		
 		this.repository = RepositoryFactory.getInstance(getApplicationContext());
 		
 		List<Device> devices = repository.getDevices();
-		
-		if(devices.size() == 0)
-		{
-			Device fake = new Device();
-			fake.setName("Fake BluetoothDevice");
-			devices.add(fake);
-		}
 		
 		vm.triggerDevices.setArray(devices.toArray(new Device[0]));
 		vm.setOperationMode(repository.getMode());
 		
 		setAndBindRootView(R.layout.preferences, vm);
 		
+	}
+	
+	private boolean isBTServiceRunning(){
+		ActivityManager activityMgr = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+		
+	    for (RunningServiceInfo service : activityMgr.getRunningServices(Integer.MAX_VALUE)) {
+	    	if (BluetoothService.class.getName().equals(service.service.getClassName())) 
+	            return true;
+	    }
+	    return false;
 	}
 
 	@Override
@@ -94,10 +96,8 @@ public class Preferences extends BaseActivity implements PreferencesViewModel.Ev
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		
-		if(id == CREATE_TRIGGER_DIALOG){
-			//TODO: add the new Trigger device defined in the Dialog to the trigger devices list in the view model
+		if(id == CREATE_TRIGGER_DIALOG)
 			return new AddTriggerDialog(this, this);
-		}
 		else
 			return null;
 	}
@@ -116,7 +116,4 @@ public class Preferences extends BaseActivity implements PreferencesViewModel.Ev
 	public void onStopService() {
 		stopService(new Intent(this, BluetoothService.class));
 	}
-
-	
-	
 }

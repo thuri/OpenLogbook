@@ -23,10 +23,7 @@ import gueei.binding.collections.ArrayListObservable;
 import gueei.binding.observables.BooleanObservable;
 import net.lueckonline.android.openlogbook.R;
 import net.lueckonline.android.openlogbook.model.Device;
-import net.lueckonline.android.openlogbook.services.BluetoothService;
 import net.lueckonline.android.openlogbook.utils.OperationModes;
-import android.app.ActivityManager;
-import android.app.ActivityManager.RunningServiceInfo;
 import android.view.View;
 import android.widget.CheckBox;
 
@@ -108,23 +105,10 @@ public class PreferencesViewModel {
 	
 	public final BooleanObservable isBluetoothServiceRunning = new BooleanObservable();
 	
-	private final ActivityManager activityMgr;
-	
-	private boolean isBTServiceRunning(){
-	    for (RunningServiceInfo service : activityMgr.getRunningServices(Integer.MAX_VALUE)) {
-	    	if (BluetoothService.class.getName().equals(service.service.getClassName())) 
-	            return true;
-	    }
-	    return false;
-	}
-	
-	public PreferencesViewModel(Eventhandler controller, ActivityManager activityMgr){
+	public PreferencesViewModel(Eventhandler controller){
 		this.controller = controller;
 		
 		this.isCommuter.set(true);
-		
-		this.activityMgr = activityMgr;
-		this.isBluetoothServiceRunning.set(isBTServiceRunning());
 	}
 	
 	public void setOperationMode(int mode){
