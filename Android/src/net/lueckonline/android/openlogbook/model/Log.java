@@ -18,6 +18,7 @@
  */
 package net.lueckonline.android.openlogbook.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -26,7 +27,12 @@ import java.util.Date;
  * Model class representing one trip
  *
  */
-public class Log {
+public class Log implements Serializable{
+	
+	/**
+	 * generated
+	 */
+	private static final long serialVersionUID = 5040704625988216665L;
 	
 	private int id;
 	private Person driver;

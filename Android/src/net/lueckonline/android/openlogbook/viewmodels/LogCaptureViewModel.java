@@ -97,13 +97,13 @@ public class LogCaptureViewModel implements IDistanceChangedListener{
 	
 	/**
 	 * DateFormat object to render a string for the date part of a Date object according to android settings
-	 * depends on the context the application is running in. Must therefor be created within the constructor 
+	 * depends on the context the application is running in. To be injected 
 	 */
 	private final DateFormat dateFormat;
 	
 	/**
 	 * DateFormat object to render a string for the time part of a Date object according to android settings
-	 * depends on the context the application is running in. Must therefor be created within the constructor
+	 * depends on the context the application is running in. To be injected
 	 */
 	private final DateFormat timeFormat;
 	
@@ -114,12 +114,13 @@ public class LogCaptureViewModel implements IDistanceChangedListener{
 	/**
 	 * the log to track
 	 */
-	private Log log = new Log();
+	//private Log log = new Log();
+	private Log log = null;
 	
 	/**
 	 * the provider for the movement tracking system
 	 */
-	private final DistanceProvider distanceProvider;
+	private DistanceProvider distanceProvider;
 	
 	/**
 	 * Constructor 
@@ -127,16 +128,55 @@ public class LogCaptureViewModel implements IDistanceChangedListener{
 	 * @param context The Android Context the application is executed in
 	 * @param locMgr  The LocationManager Object used to measure the distance of the trip
 	 */
+	@Deprecated
 	public LogCaptureViewModel(Context context, LocationManager locMgr){
 		
-		//initialize the dateformatting objects
-		dateFormat = android.text.format.DateFormat.getLongDateFormat(context);
 		timeFormat = android.text.format.DateFormat.getTimeFormat(context);
+		dateFormat = android.text.format.DateFormat.getLongDateFormat(context);
 		
 		//create a distanceProvider Object and register this object as listener for updates
 		distanceProvider = new DistanceProvider(locMgr);
 		distanceProvider.addSumChangedListener(this);
+	}
+	
+	public LogCaptureViewModel(Log log, DateFormat dateFormat, DateFormat timeFormat){
+		
+		this.timeFormat = timeFormat;
+		this.dateFormat = dateFormat;
+		
+		setLog(log);
+	}
+	
+	public void setLog(Log log){
 
+		this.log = log;
+		
+		setStart(log.getStart());
+		setStop(log.getStop());
+		
+		this.distance.set(log.getDistance());
+			
+	}
+	
+	public void setStart(Date start){
+		this.start.set(formatDate(start));
+	}
+	
+	public void setStop(Date stop){
+		this.stop.set(formatDate(stop));
+	}
+	
+	private String formatDate(Date date){
+		
+		StringBuffer sStart = new StringBuffer("");
+		
+		if(date != null){
+				sStart.append(dateFormat.format(date));
+				sStart.append(" ");
+				sStart.append(timeFormat.format(date));
+		}
+		
+		return sStart.toString();
 	}
 
 	/**
@@ -196,77 +236,17 @@ public class LogCaptureViewModel implements IDistanceChangedListener{
 	
 
 	/**
-	 * Helper Method to finish setting necessary values on the tracked log 
-	 * and pass it to the repository
-	 */
-	private void saveLog() {
-		this.log.setDistance(this.distance.get());
-		this.raiseCreateLog(this.log);
-	}
-	
-
-	/**
-	 * Stops the GPS Tracking
-	 * Resets the Label of the Button to "Start GPS" or according localization
-	 * sets the stop time on the tracked log and saves the log in the repository
-	 * 
-	 * @see saveLog
-	 * 
-	 * @param stoptime the date to use for the stop time of the tracked log
-	 */
-	private void stopLogging(Date stoptime) {
-		distanceProvider.Stop();
-		
-		String strNow = dateFormat.format(stoptime) + " " + timeFormat.format(stoptime);
-		this.stop.set(strNow);
-		
-		this.log.setStop(stoptime);
-		
-		saveLog();
-	}
-
-	/**
-	 * Starts the GPS Tracking
-	 * Resets the bound input elements (distance, start, stop)
-	 * sets the passed Date as the start time of the tracked log
-	 * 
-	 * @param starttime the date to set as start time of new log to track
-	 */
-	private void startLogging(Date starttime) {
-		
-		if(!distanceProvider.isEnabled())
-			raiseGPSDisabled();
-		
-		Log newLog = new Log();
-		newLog.setCar(this.log.getCar());
-		newLog.setDriver(this.log.getDriver());
-		this.log = newLog;
-		this.distance.set(0.0f);
-		this.stop.set("");
-		
-		String strNow = dateFormat.format(starttime) + " " + timeFormat.format(starttime);
-		this.start.set(strNow);
-		
-		this.log.setStart(starttime);
-		
-		distanceProvider.Start();
-	}
-
-	/**
 	 * real logic for the clicked event of the toggle GPS button
 	 * 
 	 * @param the toggle GPS button
 	 * @see LogCaptureViewModel.cmdToggleGPS
 	 */
 	private void btnToggleGPS_Clicked(Button button) {
-		Date now = new Date();
 		
 		if(distanceProvider.isStarted()){
-			stopLogging(now);
 			button.setText(R.string.StartGPS);
 		}
 		else {
-			startLogging(now);
 			button.setText(R.string.StopGPS);
 		}
 	}
@@ -296,32 +276,5 @@ public class LogCaptureViewModel implements IDistanceChangedListener{
 	 */
 	public void addCreateLogDelegate(CreateLogDelegate delegate) {
 		this.delegates.add(delegate);
-	}
-	
-	/**
-	 * @param newLog
-	 */
-	private void raiseCreateLog(Log newLog) {
-		for(CreateLogDelegate d : this.delegates)
-			d.AddLog(newLog);
-	}
-
-	/*
-	 * onGPSDisabled Eventhandling
-	 */
-	
-	private final List<GPSDisabledDelegate> gpsDelegates = new ArrayList<GPSDisabledDelegate>();
-	
-	public void addGPSDisabledDelegate(GPSDisabledDelegate delegate){
-		this.gpsDelegates.add(delegate);
-	}
-
-	private void raiseGPSDisabled() {
-		for(GPSDisabledDelegate d : gpsDelegates)
-			d.onGPSDisabled();
-	}
-	
-	public interface GPSDisabledDelegate {
-		public void onGPSDisabled();
 	}
 }

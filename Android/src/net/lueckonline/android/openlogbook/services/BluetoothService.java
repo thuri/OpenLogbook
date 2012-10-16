@@ -88,30 +88,6 @@ public class BluetoothService extends IntentService {
 	private boolean isDetectorStarted() {
 		return changeDetector != null;
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see android.app.IntentService#onHandleIntent(android.content.Intent)
-	 */
-	@Override
-	protected void onHandleIntent(Intent arg0) {
-
-		// check that the changeDetector is still valid!
-		// probably the service was halted or something. Just in case.
-		if (!isDetectorStarted())
-			startDetector();
-
-		synchronized (this) {
-			try {
-				wait(60000);
-			} catch (InterruptedException e) {
-				// Ok so we're interrupted while waiting. Go on
-			}
-		}
-
-		startService(new Intent(this, BluetoothService.class));
-	}
 	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
@@ -138,4 +114,27 @@ public class BluetoothService extends IntentService {
 		stopDetector();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.IntentService#onHandleIntent(android.content.Intent)
+	 */
+	@Override
+	protected void onHandleIntent(Intent arg0) {
+
+		// check that the changeDetector is still valid!
+		// probably the service was halted or something. Just in case.
+		if (!isDetectorStarted())
+			startDetector();
+
+		synchronized (this) {
+			try {
+				wait(60000);
+			} catch (InterruptedException e) {
+				// Ok so we're interrupted while waiting. Go on
+			}
+		}
+
+		startService(new Intent(this, BluetoothService.class));
+	}
 }

@@ -20,9 +20,11 @@ package net.lueckonline.android.openlogbook.services;
 
 import java.util.List;
 
+import net.lueckonline.android.openlogbook.activities.OpenLogbook;
 import net.lueckonline.android.openlogbook.dataaccess.ILogbookRepository;
 import net.lueckonline.android.openlogbook.dataaccess.RepositoryFactory;
 import net.lueckonline.android.openlogbook.model.Device;
+import net.lueckonline.android.openlogbook.model.Log;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -45,30 +47,46 @@ public class BluetoothChangeDetector extends BroadcastReceiver {
 		//Therefore the result may be cached in the repository (and the cache invalidated on changes of the device table). But that's to be
 		//encapsulated in the repository!
 		List<Device> devices = repository.getDevices();
+		Device trigger = null;
 		
-		if(!devices.contains(deviceFound.getName()))
+		for(Device d : devices){
+			if(deviceFound.getName().equals(d.getName())){ 
+				trigger = d;
+				break;
+			}
+		}
+		
+		if(trigger == null)
 			return;
 		
 		String action = intent.getAction();
 		
 		if(BluetoothDevice.ACTION_ACL_CONNECTED.equals(action))
-			this.deviceAvailable(deviceFound, repository);
+			this.deviceAvailable(context, trigger, repository);
 		else if(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED .equals(action) || BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action))
-			this.deviceUnavailable(deviceFound, repository);
-		
-		
-		
+			this.deviceUnavailable(context, trigger, repository);
 	}
 
-	private void deviceAvailable(BluetoothDevice deviceFound, ILogbookRepository repository) {
+	private void deviceAvailable(Context context, Device trigger, ILogbookRepository repository) {
 		//TODO: start tracking
 		//TODO: can a device be found multiple times? SO is it necessary to check whether tracking has already started?
 		//TODO: what if a second tracking device is found while tracking is already started?
 		
-		//context.startActivity(new Intent(OPEN_LOG_ACTIVITY_START_LOGGING));
+		Log log = new Log();
+		log.setCar(trigger.getCar());
+		
+		Intent intent = new Intent(context, DistanceService.class);
+		intent.setAction(OpenLogbook.ACTION_START_LOG);
+		intent.putExtra(DistanceService.LogExtra, log);
+		
+		context.startService(intent);
 	}
 	
-	private void deviceUnavailable(BluetoothDevice deviceFound, ILogbookRepository repository) {
-		//context.startActivity(new Intent(OPEN_LOG_ACTIVITY_STOP_LOGGING));
+	private void deviceUnavailable(Context context, Device trigger, ILogbookRepository repository) {
+		
+		Intent intent = new Intent(context, DistanceService.class);
+		intent.setAction(OpenLogbook.ACTION_STOP_LOG);
+		
+		context.stopService(new Intent(context, DistanceService.class));
 	}
 }

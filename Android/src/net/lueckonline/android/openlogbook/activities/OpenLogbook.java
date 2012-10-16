@@ -19,6 +19,8 @@
 
 package net.lueckonline.android.openlogbook.activities;
 
+import java.io.Serializable;
+
 import net.lueckonline.android.openlogbook.R;
 import net.lueckonline.android.openlogbook.activities.base.BaseActivity;
 import net.lueckonline.android.openlogbook.dataaccess.DataAccessException;
@@ -27,19 +29,21 @@ import net.lueckonline.android.openlogbook.dataaccess.RepositoryFactory;
 import net.lueckonline.android.openlogbook.model.Car;
 import net.lueckonline.android.openlogbook.model.Log;
 import net.lueckonline.android.openlogbook.model.Person;
+import net.lueckonline.android.openlogbook.services.DistanceService;
 import net.lueckonline.android.openlogbook.utils.OperationModes;
 import net.lueckonline.android.openlogbook.viewmodels.LogCaptureViewModel;
-import net.lueckonline.android.openlogbook.viewmodels.LogCaptureViewModel.GPSDisabledDelegate;
 import net.lueckonline.android.openlogbook.viewmodels.createlog.CreateLogDelegate;
 import net.lueckonline.android.openlogbook.viewmodels.mainmenu.MainMenuViewModel;
 import net.lueckonline.android.openlogbook.viewmodels.mainmenu.StartIntentDelegate;
-import android.content.Context;
 import android.content.Intent;
-import android.location.LocationManager;
 import android.os.Bundle;
 
 public class OpenLogbook extends BaseActivity implements CreateLogDelegate, StartIntentDelegate {
 
+	public static final String ACTION_START_LOG 	= "net.lueckonline.android.openlogbook.activities.OpenLogbook.ACTION_START_LOG";
+
+	public static final String ACTION_STOP_LOG 	= "net.lueckonline.android.openlogbook.activities.OpenLogbook.ACTION_STOP_LOG";
+	
 	private LogCaptureViewModel vm;
 	
 	private ILogbookRepository repository;
@@ -54,8 +58,8 @@ public class OpenLogbook extends BaseActivity implements CreateLogDelegate, Star
 		
 		repository = RepositoryFactory.getInstance(getApplicationContext());
 
+		//TODO: Move initialization elsewhere!
 		int mode = repository.getMode();
-
 		switch (mode) {
 			case OperationModes.UNKOWN:
 				
@@ -76,14 +80,25 @@ public class OpenLogbook extends BaseActivity implements CreateLogDelegate, Star
 				throw new IllegalArgumentException("Unknown OperationMode");
 		}
 		
-		vm = new LogCaptureViewModel(this.getApplicationContext(), (LocationManager) getSystemService(Context.LOCATION_SERVICE));
+		Intent intent = getIntent();
+		//check whether the intent contains a log!
+		Serializable s = intent.getSerializableExtra(DistanceService.LogExtra);
+		Log log = null;
+		if(s instanceof Log)
+			log = (Log) s;
+		
+		if(log == null)
+			log = new Log();
+		
+		//vm = new LogCaptureViewModel(this.getApplicationContext(), (LocationManager) getSystemService(Context.LOCATION_SERVICE));
+		vm = new LogCaptureViewModel(log, android.text.format.DateFormat.getLongDateFormat(this), android.text.format.DateFormat.getTimeFormat(this));
 		vm.addCreateLogDelegate(this);
-		vm.addGPSDisabledDelegate(new GPSDisabledDelegate() {
+		/*vm.addGPSDisabledDelegate(new GPSDisabledDelegate() {
 			@Override
 			public void onGPSDisabled() {
 				startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
 			}
-		});
+		});*/
 		
 		MainMenuViewModel menuVm = new MainMenuViewModel();
 		menuVm.addStartIntentDelegate(this);
@@ -121,4 +136,6 @@ public class OpenLogbook extends BaseActivity implements CreateLogDelegate, Star
 	public void Start(Class<?> clazz) {
 		startActivity(new Intent(this, clazz));
 	}
+	
+	
 }
