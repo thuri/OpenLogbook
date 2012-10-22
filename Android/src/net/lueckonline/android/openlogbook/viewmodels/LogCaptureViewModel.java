@@ -22,6 +22,7 @@ import gueei.binding.Command;
 import gueei.binding.Observable;
 import gueei.binding.collections.ArrayListObservable;
 import gueei.binding.observables.FloatObservable;
+import gueei.binding.observables.IntegerObservable;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -91,6 +92,10 @@ public class LogCaptureViewModel implements IDistanceChangedListener{
 	 */
 	public final Observable<String> stop = new Observable<String>(String.class);
 
+	
+	public final IntegerObservable selectedCar = new IntegerObservable(1);
+	
+	public final IntegerObservable selectedDriver = new IntegerObservable(1);
 	/*
 	 * Utility Fields
 	 */
@@ -139,12 +144,11 @@ public class LogCaptureViewModel implements IDistanceChangedListener{
 		distanceProvider.addSumChangedListener(this);
 	}
 	
-	public LogCaptureViewModel(Log log, DateFormat dateFormat, DateFormat timeFormat){
+	public LogCaptureViewModel(DateFormat dateFormat, DateFormat timeFormat){
 		
 		this.timeFormat = timeFormat;
 		this.dateFormat = dateFormat;
 		
-		setLog(log);
 	}
 	
 	public void setLog(Log log){
@@ -154,10 +158,42 @@ public class LogCaptureViewModel implements IDistanceChangedListener{
 		setStart(log.getStart());
 		setStop(log.getStop());
 		
+		setDriver(log.getDriver());
+		
+		setCar(log.getCar());
+		
 		this.distance.set(log.getDistance());
 			
 	}
 	
+	/**
+	 * @param car
+	 */
+	private void setCar(Car car) {
+		this.selectedCar.set(selectObject(this.cars, car));
+	}
+
+	/**
+	 * @param driver
+	 */
+	private void setDriver(Person driver) {
+		this.selectedDriver.set(selectObject(this.drivers, driver));
+	}
+	
+	private static <T> int selectObject(ArrayListObservable<T> list, T o){
+		
+		int result = -1;
+		
+		if( o == null ) return result;
+		
+		for(T item : list){
+			if(item.equals(o))
+				return list.indexOf(item);
+		}
+		
+		return -1;
+	}
+
 	public void setStart(Date start){
 		this.start.set(formatDate(start));
 	}

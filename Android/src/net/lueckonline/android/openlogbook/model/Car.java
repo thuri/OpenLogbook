@@ -18,14 +18,20 @@
  */
 package net.lueckonline.android.openlogbook.model;
 
+import java.io.Serializable;
+
 
 
 /**
  * @author thuri
  *
  */
-public class Car {
+public class Car implements Serializable{
 	
+	/**
+	 * generated
+	 */
+	private static final long serialVersionUID = -1134670231011514782L;
 	/**
 	 * The id of the car
 	 */
@@ -68,5 +74,22 @@ public class Car {
 	@Override
 	public String toString() {
 		return this.licensePlate;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		
+		boolean ret = false;
+		
+		if(o instanceof Car){
+			Car c = (Car) o;
+			
+			ret = c.getId() == this.getId();
+			
+			ret &= c.getLicensePlate().equalsIgnoreCase(this.getLicensePlate());
+			
+		}
+
+		return ret;
 	}
 }

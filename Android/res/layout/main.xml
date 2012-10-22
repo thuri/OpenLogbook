@@ -24,7 +24,8 @@
             android:layout_height="wrap_content"
             binding:itemSource="drivers"
             binding:itemTemplate="@layout/spinner_item"
-            binding:onItemSelected="driverSelected" />
+            binding:onItemSelected="driverSelected" 
+            binding:selectedPosition="selectedDriver"/>
 
         <TextView
             android:id="@+id/lbCar"
@@ -39,7 +40,8 @@
             android:layout_height="wrap_content"
             binding:itemSource="cars"
             binding:itemTemplate="@layout/spinner_item"
-            binding:onItemSelected="carSelected" />
+            binding:onItemSelected="carSelected" 
+            binding:selectedPosition="selectedCar"/>
 
         <TextView
             android:id="@+id/lbDistance"

@@ -48,16 +48,7 @@ public class OpenLogbook extends BaseActivity implements CreateLogDelegate, Star
 	
 	private ILogbookRepository repository;
 
-	/*
-	 * (non-Javadoc)
-	 * @see android.app.Activity#onCreate(android.os.Bundle)
-	 */
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		
-		repository = RepositoryFactory.getInstance(getApplicationContext());
-
+	private void initializeApp(){
 		//TODO: Move initialization elsewhere!
 		int mode = repository.getMode();
 		switch (mode) {
@@ -79,7 +70,48 @@ public class OpenLogbook extends BaseActivity implements CreateLogDelegate, Star
 			default:
 				throw new IllegalArgumentException("Unknown OperationMode");
 		}
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onCreate(android.os.Bundle)
+	 */
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 		
+		repository = RepositoryFactory.getInstance(getApplicationContext());
+
+		initializeApp();
+		
+		Log log = getLogFromIntent();
+		
+		vm = new LogCaptureViewModel(android.text.format.DateFormat.getLongDateFormat(this), android.text.format.DateFormat.getTimeFormat(this));
+		vm.addCreateLogDelegate(this);
+		updateLists();
+		
+		vm.setLog(log);
+		
+		MainMenuViewModel menuVm = new MainMenuViewModel();
+		menuVm.addStartIntentDelegate(this);
+		
+		setAndBindRootView(R.layout.main, vm);
+		setAndBindOptionsMenu(R.menu.main_menu, menuVm);
+		
+	}
+	
+	@Override
+	protected void onResume() {
+		
+		super.onResume();
+		
+		updateLists();
+	}
+
+	/**
+	 * @return
+	 */
+	private Log getLogFromIntent() {
 		Intent intent = getIntent();
 		//check whether the intent contains a log!
 		Serializable s = intent.getSerializableExtra(DistanceService.LogExtra);
@@ -89,29 +121,7 @@ public class OpenLogbook extends BaseActivity implements CreateLogDelegate, Star
 		
 		if(log == null)
 			log = new Log();
-		
-		//vm = new LogCaptureViewModel(this.getApplicationContext(), (LocationManager) getSystemService(Context.LOCATION_SERVICE));
-		vm = new LogCaptureViewModel(log, android.text.format.DateFormat.getLongDateFormat(this), android.text.format.DateFormat.getTimeFormat(this));
-		vm.addCreateLogDelegate(this);
-		/*vm.addGPSDisabledDelegate(new GPSDisabledDelegate() {
-			@Override
-			public void onGPSDisabled() {
-				startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-			}
-		});*/
-		
-		MainMenuViewModel menuVm = new MainMenuViewModel();
-		menuVm.addStartIntentDelegate(this);
-				
-		setAndBindRootView(R.layout.main, vm);
-		setAndBindOptionsMenu(R.menu.main_menu, menuVm);
-	}
-	
-	@Override
-	protected void onResume() {
-		super.onResume();
-		
-		updateLists();
+		return log;
 	}
 	
 	private void updateLists(){

@@ -44,4 +44,17 @@ public class Person {
 	public String toString() {
 		return this.name;
 	}
+	@Override
+	public boolean equals(Object o) {
+		
+		if(!(o instanceof Person)) return false;
+		
+		Person other = (Person) o;
+		boolean equal = true;
+		
+		equal &= (this.id == other.getId());
+		equal &= (this.name.equals(other.getName()));
+		
+		return equal;
+	}
 }
