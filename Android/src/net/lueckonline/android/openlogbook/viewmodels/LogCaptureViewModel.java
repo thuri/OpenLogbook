@@ -25,19 +25,12 @@ import gueei.binding.observables.FloatObservable;
 import gueei.binding.observables.IntegerObservable;
 
 import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import net.lueckonline.android.openlogbook.R;
 import net.lueckonline.android.openlogbook.model.Car;
 import net.lueckonline.android.openlogbook.model.Log;
 import net.lueckonline.android.openlogbook.model.Person;
-import net.lueckonline.android.openlogbook.utils.DistanceProvider;
-import net.lueckonline.android.openlogbook.utils.IDistanceChangedListener;
-import net.lueckonline.android.openlogbook.viewmodels.createlog.CreateLogDelegate;
-import android.content.Context;
-import android.location.LocationManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Spinner;
@@ -47,8 +40,21 @@ import android.widget.Spinner;
  * @author thuri
  *
  */
-public class LogCaptureViewModel implements IDistanceChangedListener{
+public class LogCaptureViewModel {
+	
+	public interface Eventhandler{
+		
+		public void AddLog(Log log);
+		
+		public void StartLogging();
+		
+		public void StopLogging();
 
+		public void ToggleLogging(CharSequence text);
+		
+	}
+
+	
 	/*
 	 * Fields for View-Binding
 	 */
@@ -92,10 +98,11 @@ public class LogCaptureViewModel implements IDistanceChangedListener{
 	 */
 	public final Observable<String> stop = new Observable<String>(String.class);
 
+	public final IntegerObservable selectedCar = new IntegerObservable(-1);
 	
-	public final IntegerObservable selectedCar = new IntegerObservable(1);
+	public final IntegerObservable selectedDriver = new IntegerObservable(-1);
+ 
 	
-	public final IntegerObservable selectedDriver = new IntegerObservable(1);
 	/*
 	 * Utility Fields
 	 */
@@ -119,36 +126,14 @@ public class LogCaptureViewModel implements IDistanceChangedListener{
 	/**
 	 * the log to track
 	 */
-	//private Log log = new Log();
 	private Log log = null;
+
+	private final Eventhandler controller;
 	
-	/**
-	 * the provider for the movement tracking system
-	 */
-	private DistanceProvider distanceProvider;
-	
-	/**
-	 * Constructor 
-	 * 
-	 * @param context The Android Context the application is executed in
-	 * @param locMgr  The LocationManager Object used to measure the distance of the trip
-	 */
-	@Deprecated
-	public LogCaptureViewModel(Context context, LocationManager locMgr){
-		
-		timeFormat = android.text.format.DateFormat.getTimeFormat(context);
-		dateFormat = android.text.format.DateFormat.getLongDateFormat(context);
-		
-		//create a distanceProvider Object and register this object as listener for updates
-		distanceProvider = new DistanceProvider(locMgr);
-		distanceProvider.addSumChangedListener(this);
-	}
-	
-	public LogCaptureViewModel(DateFormat dateFormat, DateFormat timeFormat){
-		
+	public LogCaptureViewModel(DateFormat dateFormat, DateFormat timeFormat, LogCaptureViewModel.Eventhandler controller){
 		this.timeFormat = timeFormat;
 		this.dateFormat = dateFormat;
-		
+		this.controller = controller;
 	}
 	
 	public void setLog(Log log){
@@ -166,21 +151,40 @@ public class LogCaptureViewModel implements IDistanceChangedListener{
 			
 	}
 	
+	public Log getLog(){
+		return this.log;
+	}
+	
 	/**
 	 * @param car
 	 */
 	private void setCar(Car car) {
-		this.selectedCar.set(selectObject(this.cars, car));
+		this.selectedCar.set(indexOf(this.cars, car));
 	}
-
+	
+	public Car getCar(){
+		return getSelected(this.cars, this.selectedCar);
+	}
+	
 	/**
 	 * @param driver
 	 */
 	private void setDriver(Person driver) {
-		this.selectedDriver.set(selectObject(this.drivers, driver));
+		this.selectedDriver.set(indexOf(this.drivers, driver));
 	}
 	
-	private static <T> int selectObject(ArrayListObservable<T> list, T o){
+	public Person getDriver(){
+		return getSelected(this.drivers, this.selectedDriver);
+	}
+
+	private static <T> T getSelected(ArrayListObservable<T> list, IntegerObservable position){
+		int p = position.get();
+		
+		if(p < 0) 	return null;
+		else  		return list.getItem(p);
+	}
+	
+	private static <T> int indexOf(ArrayListObservable<T> list, T o){
 		
 		int result = -1;
 		
@@ -194,11 +198,11 @@ public class LogCaptureViewModel implements IDistanceChangedListener{
 		return -1;
 	}
 
-	public void setStart(Date start){
+	private void setStart(Date start){
 		this.start.set(formatDate(start));
 	}
 	
-	public void setStop(Date stop){
+	private void setStop(Date stop){
 		this.stop.set(formatDate(stop));
 	}
 	
@@ -226,9 +230,39 @@ public class LogCaptureViewModel implements IDistanceChangedListener{
 	public final Command cmdToggleGPS = new Command(){
 		@Override
 		public void Invoke(View vButton, Object... arg1) {
-			btnToggleGPS_Clicked((Button)vButton);
+			if(vButton instanceof Button){
+				Button btn = (Button) vButton;
+				controller.ToggleLogging(btn.getText());
+			}
 		}
 	};
+
+	/**
+	 * real logic for the clicked event of the toggle GPS button
+	 * 
+	 * @param the toggle GPS button
+	 * @see LogCaptureViewModel.cmdToggleGPS
+	 */
+	/*private void btnToggleGPS_Clicked(Button button) {
+		
+		switch(state){
+			case STOPPED:
+				controller.StartLogging();
+				setState(State.STARTED);
+				button.setText(R.string.StopGPS);
+				break;
+			case STARTED:
+				controller.StopLogging();
+				setState(State.READYTOSAVE);
+				button.setText(R.string.SaveLog);
+				break;
+			case READYTOSAVE:
+				controller.AddLog(log);
+				setState(State.STOPPED);
+				button.setText(R.string.StartGPS);
+				break;
+		}
+	}*/
 	
 	/**
 	 * Command-Proxy bound to the onItemSelected Event of the spinnerCars Spinner
@@ -260,33 +294,6 @@ public class LogCaptureViewModel implements IDistanceChangedListener{
 		}
 	};
 
-	private final List<CreateLogDelegate> delegates = new ArrayList<CreateLogDelegate>();
-
-	/* (non-Javadoc)
-	 * @see net.lueckonline.android.openlogbook.utils.IDistanceChangedListener#DistanceChanged(float)
-	 */
-	@Override
-	public void DistanceChanged(float distance) {
-		this.distance.set(distance);
-	}
-	
-
-	/**
-	 * real logic for the clicked event of the toggle GPS button
-	 * 
-	 * @param the toggle GPS button
-	 * @see LogCaptureViewModel.cmdToggleGPS
-	 */
-	private void btnToggleGPS_Clicked(Button button) {
-		
-		if(distanceProvider.isStarted()){
-			button.setText(R.string.StartGPS);
-		}
-		else {
-			button.setText(R.string.StopGPS);
-		}
-	}
-
 	/**
 	 * real logic for the selectedItem changed event of the spinner for the spinner spinnerCars 
 	 * 
@@ -305,12 +312,5 @@ public class LogCaptureViewModel implements IDistanceChangedListener{
 	 */
 	private void spinnerDrivers_SelectedIdxChanged(Spinner spinner, Integer newIdx) {
 		log.setDriver(drivers.get(newIdx));
-	}
-
-	/**
-	 * @param delegate
-	 */
-	public void addCreateLogDelegate(CreateLogDelegate delegate) {
-		this.delegates.add(delegate);
 	}
 }

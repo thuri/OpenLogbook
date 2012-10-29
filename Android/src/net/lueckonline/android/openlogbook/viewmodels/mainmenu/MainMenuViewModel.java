@@ -19,10 +19,6 @@
 package net.lueckonline.android.openlogbook.viewmodels.mainmenu;
 
 import gueei.binding.Command;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import net.lueckonline.android.openlogbook.activities.CreateCar;
 import net.lueckonline.android.openlogbook.activities.CreateDriver;
 import net.lueckonline.android.openlogbook.activities.Export;
@@ -34,6 +30,16 @@ import android.view.View;
  *
  */
 public class MainMenuViewModel {
+	
+	public interface Eventhandler {
+		void Start(Class<?> clazz);
+	}
+	
+	private final Eventhandler controller;
+	
+	public MainMenuViewModel(Eventhandler controller){
+		this.controller = controller;
+	}
 
 	public final Command openPreferences = new Command(){
 		@Override
@@ -62,15 +68,8 @@ public class MainMenuViewModel {
 			startIntent(Export.class);
 		}
 	};
-
-	private List<StartIntentDelegate> delegates = new ArrayList<StartIntentDelegate>();
 	
 	protected void startIntent(Class<?> clazz) {
-		for(StartIntentDelegate d : delegates)
-			d.Start(clazz);
-	}
-	
-	public void addStartIntentDelegate(StartIntentDelegate delegate){
-		this.delegates.add(delegate);
+		this.controller.Start(clazz);
 	}
 }

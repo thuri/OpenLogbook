@@ -18,12 +18,19 @@
  */
 package net.lueckonline.android.openlogbook.model;
 
+import java.io.Serializable;
+
 
 /**
  * @author thuri
  *
  */
-public class Person {
+public class Person implements Serializable {
+	
+	/**
+	 * generated 
+	 */
+	private static final long serialVersionUID = -6092583348438796013L;
 
 	private int id;
 	private String name = null; 

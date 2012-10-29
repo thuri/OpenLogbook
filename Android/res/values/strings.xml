@@ -26,6 +26,7 @@
 	<string name="CommitModeSelection">Select</string>
 	<string name="StartGPS">Start GPS</string>
 	<string name="StopGPS">Stop GPS</string>
+	<string name="SaveLog">Save displayed Log</string>
 	<string name="Driver">Driver</string>
 	<string name="Drivers">Drivers</string>
 	<string name="Distance">Distance</string>

@@ -37,12 +37,22 @@ import android.os.IBinder;
  */
 public class DistanceService extends Service implements LocationListener {
 
-	public static final String LogExtra = "net.lueckonline.android openlogbook.START_LOG";
+	public static final String LOG_EXTRA = "net.lueckonline.android.openlogbook.START_LOG";
 	
 	private Log log = null;
 	private LocationManager locMgr = null;
 	private Location lastLocation = null;
 
+	/**
+	 * @return
+	 */
+	private Intent buildIntent(String action) {
+		Intent intent = new Intent(this, OpenLogbook.class);
+		intent.setAction(action);
+		intent.putExtra(LOG_EXTRA, this.log);
+		return intent;
+	}
+	
 	@Override
 	public void onLocationChanged(Location location) {
 		
@@ -61,6 +71,13 @@ public class DistanceService extends Service implements LocationListener {
 			log.setDistance(d);
 			
 			lastLocation = location;
+			
+			//Intent intent = buildIntent(OpenLogbook.ACTION_DISTANCE_CHANGED);
+			Intent intent = new Intent(OpenLogbook.ACTION_DISTANCE_CHANGED);
+			intent.putExtra(LOG_EXTRA, this.log);
+			
+			sendBroadcast(intent);
+
 		//}
 	}
 
@@ -77,7 +94,7 @@ public class DistanceService extends Service implements LocationListener {
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		int onStartCommand = super.onStartCommand(intent, flags, startId);
 		
-		Serializable s = intent.getSerializableExtra(LogExtra);
+		Serializable s = intent.getSerializableExtra(LOG_EXTRA);
 		
 		if(s instanceof Log){
 			
@@ -86,8 +103,8 @@ public class DistanceService extends Service implements LocationListener {
 			this.log.setStart(new Date());
 		 
 			//TODO: Evaluate which Provider to use based on settings (commuter vs. fieldstaff), connected bluetooth device and such!
-			//locMgr.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
-			locMgr.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
+			locMgr.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+			//locMgr.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
 		
 		}
 		else {
@@ -104,16 +121,17 @@ public class DistanceService extends Service implements LocationListener {
 		locMgr.removeUpdates(this);
 		
 		this.log.setStop(new Date());
-		
-		Intent intent = new Intent(this, OpenLogbook.class);
-		intent.setAction(OpenLogbook.ACTION_STOP_LOG);
-		intent.putExtra(LogExtra, this.log);
+
+		Intent intent = buildIntent(OpenLogbook.ACTION_STOP_LOG);
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		
 		this.startActivity(intent);
 		
 
 	}
+
+	
+
 
 	@Override
 	public void onProviderDisabled(String provider) {
