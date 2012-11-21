@@ -103,7 +103,7 @@ public class DistanceService extends Service implements LocationListener {
 			this.log.setStart(new Date());
 		 
 			//TODO: Evaluate which Provider to use based on settings (commuter vs. fieldstaff), connected bluetooth device and such!
-			locMgr.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+			locMgr.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 500, this);
 			//locMgr.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
 		
 		}
@@ -127,11 +127,7 @@ public class DistanceService extends Service implements LocationListener {
 		
 		this.startActivity(intent);
 		
-
 	}
-
-	
-
 
 	@Override
 	public void onProviderDisabled(String provider) {
