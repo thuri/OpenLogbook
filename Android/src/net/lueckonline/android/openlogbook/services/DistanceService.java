@@ -50,6 +50,7 @@ public class DistanceService extends Service implements LocationListener {
 		Intent intent = new Intent(this, OpenLogbook.class);
 		intent.setAction(action);
 		intent.putExtra(LOG_EXTRA, this.log);
+		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		return intent;
 	}
 	
@@ -105,6 +106,9 @@ public class DistanceService extends Service implements LocationListener {
 			//TODO: Evaluate which Provider to use based on settings (commuter vs. fieldstaff), connected bluetooth device and such!
 			locMgr.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 500, this);
 			//locMgr.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
+			
+			Intent newIntent = buildIntent(OpenLogbook.ACTION_START_LOG);
+			this.startActivity(newIntent);
 		
 		}
 		else {
@@ -123,7 +127,7 @@ public class DistanceService extends Service implements LocationListener {
 		this.log.setStop(new Date());
 
 		Intent intent = buildIntent(OpenLogbook.ACTION_STOP_LOG);
-		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		
 		
 		this.startActivity(intent);
 		

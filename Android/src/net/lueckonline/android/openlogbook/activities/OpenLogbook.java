@@ -91,6 +91,7 @@ public class OpenLogbook extends BaseActivity implements LogCaptureViewModel.Eve
 		else if(ACTION_STOP_LOG.equals(action)){
 			
 			if(getRepository().isLogSaveable(log))
+				//TODO: Make notification that log has been saved!
 				AddLog(log);
 			else 
 				getToggleButton().setText(R.string.SaveLog);
