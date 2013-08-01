@@ -68,7 +68,6 @@ public class BluetoothChangeDetector extends BroadcastReceiver {
 	}
 
 	private void deviceAvailable(Context context, Device trigger, ILogbookRepository repository) {
-		//TODO: start tracking
 		//TODO: can a device be found multiple times? SO is it necessary to check whether tracking has already started?
 		//TODO: what if a second tracking device is found while tracking is already started?
 		

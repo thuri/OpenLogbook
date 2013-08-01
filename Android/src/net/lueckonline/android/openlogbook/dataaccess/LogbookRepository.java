@@ -207,9 +207,21 @@ public class LogbookRepository implements ILogbookRepository {
 		}
 
 	}
-
+	
 	@Override
+	public boolean isLogSaveable(Log log) {
+		if(log.getCar() != null && log.getDriver() != null && 
+		   log.getStart() != null && log.getStop() != null)
+			return true;
+		else
+			return false;
+	}
+
 	public void add(Log log) throws DataAccessException {
+		
+		if(!isLogSaveable(log))
+			throw new DataAccessException("Log is not complete! Can't be saved!");
+		
 		SQLiteDatabase db = this.dbHelper.getWritableDatabase();
 
 		ContentValues values = new ContentValues();

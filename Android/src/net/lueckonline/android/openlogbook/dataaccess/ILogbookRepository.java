@@ -52,4 +52,6 @@ public interface ILogbookRepository {
 	public List<Device> getDevices();
 
 	void add(Device device) throws DataAccessException;
+	
+	public boolean isLogSaveable(Log log);
 }

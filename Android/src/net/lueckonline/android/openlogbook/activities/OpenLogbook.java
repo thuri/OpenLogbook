@@ -75,7 +75,6 @@ public class OpenLogbook extends BaseActivity implements LogCaptureViewModel.Eve
 		
 		String action = intent.getAction();
 		
-		
 		MainMenuViewModel menuVm = new MainMenuViewModel(this);
 		
 		setAndBindRootView(R.layout.main, vm);
@@ -89,13 +88,16 @@ public class OpenLogbook extends BaseActivity implements LogCaptureViewModel.Eve
 			getToggleButton().setText(R.string.StopGPS);
 		//if the log is stopped from outside and the activity is created we set the state to ready to save.
 		//by that we assume that the log is complete!!
-		/*else if(ACTION_STOP_LOG.equals(action)){
-			getToggleButton().setText(R.string.SaveLog);
-		}*/
-		else {
-			if(log != null && log.getStart() != null && log.getStop() != null)
+		else if(ACTION_STOP_LOG.equals(action)){
+			
+			if(getRepository().isLogSaveable(log))
 				AddLog(log);
-			getToggleButton().setText(R.string.StartGPS);
+			else 
+				getToggleButton().setText(R.string.SaveLog);
+		}
+		else {
+			//this should never occur!
+			getToggleButton().setText(R.string.SaveLog);
 		}
 		
 	}
