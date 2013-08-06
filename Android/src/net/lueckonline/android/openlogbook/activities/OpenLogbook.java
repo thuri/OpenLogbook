@@ -97,8 +97,8 @@ public class OpenLogbook extends BaseActivity implements LogCaptureViewModel.Eve
 				getToggleButton().setText(R.string.SaveLog);
 		}
 		else {
-			//this should never occur!
-			getToggleButton().setText(R.string.SaveLog);
+			//this occurs, if the application is started!
+			getToggleButton().setText(R.string.StartGPS);
 		}
 		
 	}
@@ -109,8 +109,11 @@ public class OpenLogbook extends BaseActivity implements LogCaptureViewModel.Eve
 		super.onResume();
 		
 		updateLists();
+		IntentFilter intentFilter = new IntentFilter(OpenLogbook.ACTION_DISTANCE_CHANGED);
+		intentFilter.addAction(OpenLogbook.ACTION_START_LOG);
+		intentFilter.addAction(OpenLogbook.ACTION_STOP_LOG);
 		
-		this.registerReceiver(this.br, new IntentFilter(OpenLogbook.ACTION_DISTANCE_CHANGED));
+		this.registerReceiver(this.br, intentFilter);
 	}
 	
 	@Override
