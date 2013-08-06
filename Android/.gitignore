@@ -3,3 +3,4 @@ project.properties
 /gen
 /assets
 /bin
+/.classpath
