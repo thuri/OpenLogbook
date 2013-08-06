@@ -24,8 +24,11 @@ public class OpenLogbookApplication extends Application {
 			case OperationModes.UNKOWN:
 				
 				Intent intent = new Intent(this, Preferences.class);
+				intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				Intent carIntent = new Intent(this, CreateCar.class);
+				carIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				Intent driverIntent = new Intent(this, CreateDriver.class);
+				driverIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				
 				startActivity(intent);
 				startActivity(carIntent);
