@@ -102,7 +102,7 @@ public class DistanceService extends Service implements LocationListener {
 			locMgr.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
 			//locMgr.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
 			
- 			sendBroadcast(buildIntent(OpenLogbook.ACTION_DISTANCE_CHANGED));
+ 			sendBroadcast(buildIntent(OpenLogbook.ACTION_START_LOG));
 		
 		}
 		else {
@@ -120,8 +120,7 @@ public class DistanceService extends Service implements LocationListener {
 		
 		this.log.setStop(new Date());
 
-		Intent intent = buildIntent(OpenLogbook.ACTION_STOP_LOG);
-		sendBroadcast(intent);
+		sendBroadcast(buildIntent(OpenLogbook.ACTION_STOP_LOG));
 		
 	}
 
