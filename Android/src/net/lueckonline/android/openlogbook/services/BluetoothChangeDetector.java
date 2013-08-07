@@ -86,6 +86,6 @@ public class BluetoothChangeDetector extends BroadcastReceiver {
 		Intent intent = new Intent(context, DistanceService.class);
 		intent.setAction(OpenLogbook.ACTION_STOP_LOG);
 		
-		context.stopService(new Intent(context, DistanceService.class));
+		context.stopService(intent);
 	}
 }
