@@ -50,9 +50,29 @@ public class OpenLogbook extends BaseActivity implements LogCaptureViewModel.Eve
 	private final BroadcastReceiver br = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			Serializable extra = intent.getSerializableExtra(DistanceService.LOG_EXTRA);
+			final Serializable extra = intent.getSerializableExtra(DistanceService.LOG_EXTRA);
 			if(extra != null && vm != null && extra instanceof Log){
 				vm.setLog((Log) extra);
+			}
+			
+			final String action = intent.getAction();
+			
+			//if the intent came from a service, we need to adjust the text of the toggle Button
+			//This is necessary because the ViewModel Object is newly created on each "onCreate" call and thus the state 
+			//would always be initialized with the default value.
+			//we set the text in here because we can't bind easily to a resource id but want to support internationalization
+			if(ACTION_DISTANCE_CHANGED.equals(action) || ACTION_START_LOG.equals(action))
+				getToggleButton().setText(R.string.StopGPS);
+			//if the log is stopped from outside and the activity is created we set the state to ready to save.
+			//by that we assume that the log is complete!!
+			else if(ACTION_STOP_LOG.equals(action)){
+				
+				//TODO: autosave?
+				/*if(getRepository().isLogSaveable(vm.getLog()))
+					//TODO: Make notification that log has been saved!
+					AddLog(vm.getLog());
+				else*/ 
+					getToggleButton().setText(R.string.SaveLog);
 			}
 		}
 	};
@@ -73,34 +93,12 @@ public class OpenLogbook extends BaseActivity implements LogCaptureViewModel.Eve
 		
 		vm.setLog(log);
 		
-		String action = intent.getAction();
-		
 		MainMenuViewModel menuVm = new MainMenuViewModel(this);
 		
 		setAndBindRootView(R.layout.main, vm);
 		setAndBindOptionsMenu(R.menu.main_menu, menuVm);
-
-		//if the intent came from a service, we need to adjust the text of the toggle Button
-		//This is necessary because the ViewModel Object is newly created on each "onCreate" call and thus the state 
-		//would always be initialized with the default value.
-		//we set the text in here because we can't bind easily to a resource id but want to support internationalization
-		if(ACTION_DISTANCE_CHANGED.equals(action) || ACTION_START_LOG.equals(action))
-			getToggleButton().setText(R.string.StopGPS);
-		//if the log is stopped from outside and the activity is created we set the state to ready to save.
-		//by that we assume that the log is complete!!
-		else if(ACTION_STOP_LOG.equals(action)){
-			
-			if(getRepository().isLogSaveable(log))
-				//TODO: Make notification that log has been saved!
-				AddLog(log);
-			else 
-				getToggleButton().setText(R.string.SaveLog);
-		}
-		else {
-			//this occurs, if the application is started!
-			getToggleButton().setText(R.string.StartGPS);
-		}
 		
+		getToggleButton().setText(R.string.StartGPS);
 	}
 	
 	@Override
@@ -191,13 +189,11 @@ public class OpenLogbook extends BaseActivity implements LogCaptureViewModel.Eve
 		
 		if(text.equals(getText(R.string.StartGPS))){
 			this.StartLogging();
-			getToggleButton().setText(R.string.StopGPS);
 		}
 		else if(text.equals(getText(R.string.StopGPS))){
 			this.StopLogging();
-			getToggleButton().setText(R.string.SaveLog);
 		}
-		else {
+		else if(text.equals(getText(R.string.SaveLog))) {
 			this.AddLog(vm.getLog());
 			getToggleButton().setText(R.string.StartGPS);
 		}
